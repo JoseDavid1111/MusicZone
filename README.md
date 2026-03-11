@@ -51,7 +51,7 @@ MusicZone/
 ├── backend/           # Spring Boot Application
 │   └── src/           # API Logic & Database Config
 ├── frontend/          # Web Interface
-│   ├── css/           # Netflix-style styling
+│   ├── css/           # styling
 │   ├── js/            # API consumption & DOM logic
 │   └── index.html     # Main entry point
 └── README.md
