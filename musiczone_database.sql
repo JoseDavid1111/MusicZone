@@ -134,7 +134,6 @@ CREATE INDEX idx_album_artista   ON album(id_artista);
 --  USUARIOS
 --  Contraseñas hasheadas con BCrypt (factor 10):
 --    admin123  → hash del primer registro
---    user456   → hash del segundo registro
 -- ─────────────────────────────────────────────────────────────
 INSERT INTO usuario (nombre_usuario, password, correo) VALUES
 ('admin',
@@ -230,8 +229,6 @@ INSERT INTO playlist (nombre, id_usuario, descripcion) VALUES
 ('Mis Clásicos',        1, 'Las mejores canciones de todos los tiempos'),
 ('Workout Mix',         2, 'Energía pura para entrenar'),
 ('Relax & Chill',       2, 'Canciones para relajarse'),
-('Lo Mejor del Reggaeton', 3, 'Urban vibes'),
-('Hits 2022',           3, 'Los temas más populares del año 2022');
 
 -- ─────────────────────────────────────────────────────────────
 --  CANCIONES EN PLAYLISTS
@@ -260,21 +257,3 @@ INSERT INTO cancion_playlist (id_playlist, id_cancion, posicion) VALUES
 (3, 7,  3),   -- Love of My Life
 (3, 25, 4),   -- Instant Crush
 (3, 22, 5),   -- Frío Frío
-
--- Playlist 4: Lo Mejor del Reggaeton (sofia_r)
-(4, 11, 1),   -- Moscow Mule
-(4, 12, 2),   -- Me Porto Bonito
-(4, 13, 3),   -- Tití Me Preguntó
-(4, 14, 4),   -- Safaera
-(4, 15, 5),   -- Yo Perreo Sola
-
--- Playlist 5: Hits 2022 (sofia_r)
-(5, 11, 1),   -- Moscow Mule
-(5, 13, 2),   -- Tití Me Preguntó
-(5, 19, 3),   -- Anti-Hero
-(5, 20, 4),   -- Lavender Haze
-(5, 12, 5);   -- Me Porto Bonito
-JOIN   cancion c      ON ps.id_cancion     = c.id_cancion
-JOIN   artista ar   ON c.id_artista    = ar.id_artista
-WHERE  p.id_playlist = 1
-ORDER BY ps.posicion;
