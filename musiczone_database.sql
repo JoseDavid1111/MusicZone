@@ -256,4 +256,4 @@ INSERT INTO cancion_playlist (id_playlist, id_cancion, posicion) VALUES
 (3, 2,  2),   -- Something
 (3, 7,  3),   -- Love of My Life
 (3, 25, 4),   -- Instant Crush
-(3, 22, 5),   -- Frío Frío
+(3, 22, 5)   -- Frío Frío
