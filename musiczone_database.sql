@@ -3,8 +3,8 @@
 -- ============================================================
 
 --  0. PREPARACIÓN
-DROP DATABASE IF EXISTS musiczone;
-CREATE DATABASE musiczone CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+-- DROP DATABASE IF EXISTS musiczone;
+-- CREATE DATABASE musiczone CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE musiczone;
 
 --  1. TABLA: users
@@ -138,14 +138,13 @@ CREATE INDEX idx_album_artista   ON album(id_artista);
 -- ─────────────────────────────────────────────────────────────
 INSERT INTO usuario (nombre_usuario, password, correo) VALUES
 ('admin',
- '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',
- 'admin@musiczone.com'),
-('carlos_m',
- '$2a$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIU0zccrfnFwXpO',
- 'carlos@musiczone.com'),
-('sofia_r',
- '$2a$10$Ei6V1yFdJo4AoZ5GmU9sQOBPyWvkqm3.TYmNSTY7Ie1S0v1.yzQxq',
- 'sofia@musiczone.com');
+ '$2a$10$TGbEZJmskT9KPoSp4arWkOD6/XFB2m6p0XqNAuF11E9C7Tl19xKxS',
+ 'admin@musiczone.com');
+
+('test',
+ '$2a$10$onlCW1yjS3zMziUVBsiJJ.fRaiSPlKbDGw1J0XgS0sw0henGAYbwi',
+ 'test@test.com');
+
 
 -- ─────────────────────────────────────────────────────────────
 --  ARTISTAS
@@ -275,40 +274,6 @@ INSERT INTO cancion_playlist (id_playlist, id_cancion, posicion) VALUES
 (5, 19, 3),   -- Anti-Hero
 (5, 20, 4),   -- Lavender Haze
 (5, 12, 5);   -- Me Porto Bonito
-
-
--- ============================================================
---  CONSULTAS DE VERIFICACIÓN
---  Ejecuta estos SELECT para confirmar que todo quedó bien
--- ============================================================
-
--- Total de registros por tabla
-SELECT 'usuario'          AS tabla, COUNT(*) AS total FROM usuario
-UNION ALL
-SELECT 'artista',                  COUNT(*) FROM artista
-UNION ALL
-SELECT 'album',                   COUNT(*) FROM album
-UNION ALL
-SELECT 'cancion',                    COUNT(*) FROM cancion
-UNION ALL
-SELECT 'playlist',                COUNT(*) FROM playlist
-UNION ALL
-SELECT 'cancion_playlist',           COUNT(*) FROM cancion_playlist;
-
--- Búsqueda por artista (RF7)
-SELECT c.titulo, a.nombre AS artista, al.titulo AS album, c.duracion_segundos
-FROM   cancion c
-JOIN   artista a  ON c.id_artista = a.id_artista
-LEFT JOIN album al ON c.id_album  = al.id_album
-WHERE  a.nombre LIKE '%Queen%'
-ORDER BY al.titulo, c.numero_track;
-
--- Ver una playlist completa con sus canciones (RF5, RF11)
-SELECT p.nombre AS playlist, u.nombre_usuario, c.titulo AS cancion,
-       ar.nombre AS artista, ps.posicion
-FROM   cancion_playlist ps
-JOIN   playlist p  ON ps.id_playlist = p.id_playlist
-JOIN   usuario u      ON p.id_usuario      = u.id_usuario
 JOIN   cancion c      ON ps.id_cancion     = c.id_cancion
 JOIN   artista ar   ON c.id_artista    = ar.id_artista
 WHERE  p.id_playlist = 1
