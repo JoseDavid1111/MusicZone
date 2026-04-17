@@ -7,12 +7,21 @@
 -- CREATE DATABASE musiczone CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE musiczone;
 
---  1. TABLA: users
+-- ELIMINACIÓN DE TABLAS (Orden correcto para evitar Error 3730)
+-- Primero borramos las que TIENEN llaves foráneas (tablas hijas/puente)
+DROP TABLE IF EXISTS cancion_playlist; -- Depende de playlist y cancion
+DROP TABLE IF EXISTS playlist;         -- Depende de usuario
+DROP TABLE IF EXISTS cancion;          -- Depende de artista y album
+DROP TABLE IF EXISTS album;            -- Depende de artista
+-- Al final borramos las que NO dependen de nadie (tablas maestras)
+DROP TABLE IF EXISTS artista;
 DROP TABLE IF EXISTS usuario;
+
+--  1. TABLA: usuario
 CREATE TABLE usuario (
-    id_usuario         BIGINT       NOT NULL AUTO_INCREMENT,
+    id_usuario          BIGINT       NOT NULL AUTO_INCREMENT,
     nombre_usuario   VARCHAR(50)  NOT NULL,
-    password   VARCHAR(255) NOT NULL,   -- Hash BCrypt (mínimo 60 chars)
+    password   VARCHAR(255) NOT NULL,
     correo      VARCHAR(100) NOT NULL,
     active     BOOLEAN      NOT NULL DEFAULT TRUE,
     fecha_creacion TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -21,6 +30,8 @@ CREATE TABLE usuario (
     CONSTRAINT uq_nombre_usuario  UNIQUE (nombre_usuario),
     CONSTRAINT uq_usuario_correo  UNIQUE (correo)
 );
+
+-- ... (continúa con el resto de tus CREATE TABLE tal cual los tenías)
 
 --  2. TABLA: artist
 DROP TABLE IF EXISTS artista;
@@ -138,7 +149,7 @@ CREATE INDEX idx_album_artista   ON album(id_artista);
 INSERT INTO usuario (nombre_usuario, password, correo) VALUES
 ('admin',
  '$2a$10$TGbEZJmskT9KPoSp4arWkOD6/XFB2m6p0XqNAuF11E9C7Tl19xKxS',
- 'admin@musiczone.com');
+ 'admin@musiczone.com'),
 
 ('test',
  '$2a$10$onlCW1yjS3zMziUVBsiJJ.fRaiSPlKbDGw1J0XgS0sw0henGAYbwi',
@@ -228,7 +239,7 @@ INSERT INTO cancion (titulo, id_artista, id_album, duracion_segundos, numero_tra
 INSERT INTO playlist (nombre, id_usuario, descripcion) VALUES
 ('Mis Clásicos',        1, 'Las mejores canciones de todos los tiempos'),
 ('Workout Mix',         2, 'Energía pura para entrenar'),
-('Relax & Chill',       2, 'Canciones para relajarse'),
+('Relax & Chill',       2, 'Canciones para relajarse');
 
 -- ─────────────────────────────────────────────────────────────
 --  CANCIONES EN PLAYLISTS
