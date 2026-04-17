@@ -1,0 +1,109 @@
+/* RESET - Limpia los márgenes que el navegador pone por defecto */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* FONDO GENERAL */
+body {
+  background-color: black;
+  color: white;
+  font-family: Arial, sans-serif;
+  height: 100vh; /* ocupa toda la pantalla */
+}
+
+/* ENCABEZADO */
+header {
+  background-color: black;
+  padding: 15px 20px;
+  display: flex;          /* pone los elementos en fila */
+  align-items: center;    /* los centra verticalmente */
+  gap: 15px;              /* espacio entre elementos */
+  border: 2px solid red; /* borde debug */
+}
+
+/* ZONA PRINCIPAL (menú + contenido) */
+#principal {
+  display: flex;          /* menú e izquierda quedan en fila */
+  height: calc(100vh - 60px); /* resto de la pantalla */
+  border: 2px solid purple; /* borde debug */
+}
+
+/* MENÚ IZQUIERDO */
+#menu {
+  width: 200px;           /* ancho fijo */
+  background-color: #111;
+  border: 2px solid lightgreen; /* borde debug */
+}
+
+/* CONTENIDO */
+#contenido {
+  flex: 1;                /* ocupa todo el espacio restante */
+  background-color: black;
+  border: 2px solid lightsalmon; /* borde debug */
+}
+
+/* TÍTULO */
+h1 {
+  color: red;
+  font-size: 40px;
+}
+
+#cajabusqueda {
+  display: flex;
+  align-items: center;
+  border: 2px solid red;
+  border-radius: 20px;
+  padding: 0 10px;
+  width: 350px;
+}
+
+/* BUSCADOR */
+input {
+  background-color: black;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-size: 16px;
+  width: 300px;
+  outline: none;
+  box-shadow: none;
+  border: none;
+}
+
+/* BOTÓN LUPA */
+#boton1 {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+}
+
+#lupacirculo {
+  width: 14px;
+  height: 14px;
+  border: 1px solid red;
+  border-radius: 50%;   /* lo hace círculo */
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#lupapalito {
+  width: 8.3px;
+  height: 1px;
+  background-color: red;
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  top: 14px;
+  transform: rotate(45deg);  /* lo inclina como lupa */
+}
+
+
