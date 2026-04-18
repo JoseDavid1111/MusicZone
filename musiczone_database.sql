@@ -3,16 +3,25 @@
 -- ============================================================
 
 --  0. PREPARACIÓN
-DROP DATABASE IF EXISTS musiczone;
-CREATE DATABASE musiczone CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+-- DROP DATABASE IF EXISTS musiczone;
+-- CREATE DATABASE musiczone CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE musiczone;
 
---  1. TABLA: users
+-- ELIMINACIÓN DE TABLAS (Orden correcto para evitar Error 3730)
+-- Primero borramos las que TIENEN llaves foráneas (tablas hijas/puente)
+DROP TABLE IF EXISTS cancion_playlist; -- Depende de playlist y cancion
+DROP TABLE IF EXISTS playlist;         -- Depende de usuario
+DROP TABLE IF EXISTS cancion;          -- Depende de artista y album
+DROP TABLE IF EXISTS album;            -- Depende de artista
+-- Al final borramos las que NO dependen de nadie (tablas maestras)
+DROP TABLE IF EXISTS artista;
 DROP TABLE IF EXISTS usuario;
+
+--  1. TABLA: usuario
 CREATE TABLE usuario (
-    id_usuario         BIGINT       NOT NULL AUTO_INCREMENT,
+    id_usuario          BIGINT       NOT NULL AUTO_INCREMENT,
     nombre_usuario   VARCHAR(50)  NOT NULL,
-    password   VARCHAR(255) NOT NULL,   -- Hash BCrypt (mínimo 60 chars)
+    password   VARCHAR(255) NOT NULL,
     correo      VARCHAR(100) NOT NULL,
     active     BOOLEAN      NOT NULL DEFAULT TRUE,
     fecha_creacion TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -21,6 +30,8 @@ CREATE TABLE usuario (
     CONSTRAINT uq_nombre_usuario  UNIQUE (nombre_usuario),
     CONSTRAINT uq_usuario_correo  UNIQUE (correo)
 );
+
+-- ... (continúa con el resto de tus CREATE TABLE tal cual los tenías)
 
 --  2. TABLA: artist
 DROP TABLE IF EXISTS artista;
@@ -134,18 +145,16 @@ CREATE INDEX idx_album_artista   ON album(id_artista);
 --  USUARIOS
 --  Contraseñas hasheadas con BCrypt (factor 10):
 --    admin123  → hash del primer registro
---    user456   → hash del segundo registro
 -- ─────────────────────────────────────────────────────────────
 INSERT INTO usuario (nombre_usuario, password, correo) VALUES
 ('admin',
- '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy',
+ '$2a$10$TGbEZJmskT9KPoSp4arWkOD6/XFB2m6p0XqNAuF11E9C7Tl19xKxS',
  'admin@musiczone.com'),
-('carlos_m',
- '$2a$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIU0zccrfnFwXpO',
- 'carlos@musiczone.com'),
-('sofia_r',
- '$2a$10$Ei6V1yFdJo4AoZ5GmU9sQOBPyWvkqm3.TYmNSTY7Ie1S0v1.yzQxq',
- 'sofia@musiczone.com');
+
+('test',
+ '$2a$10$onlCW1yjS3zMziUVBsiJJ.fRaiSPlKbDGw1J0XgS0sw0henGAYbwi',
+ 'test@test.com');
+
 
 -- ─────────────────────────────────────────────────────────────
 --  ARTISTAS
@@ -230,9 +239,7 @@ INSERT INTO cancion (titulo, id_artista, id_album, duracion_segundos, numero_tra
 INSERT INTO playlist (nombre, id_usuario, descripcion) VALUES
 ('Mis Clásicos',        1, 'Las mejores canciones de todos los tiempos'),
 ('Workout Mix',         2, 'Energía pura para entrenar'),
-('Relax & Chill',       2, 'Canciones para relajarse'),
-('Lo Mejor del Reggaeton', 3, 'Urban vibes'),
-('Hits 2022',           3, 'Los temas más populares del año 2022');
+('Relax & Chill',       2, 'Canciones para relajarse');
 
 -- ─────────────────────────────────────────────────────────────
 --  CANCIONES EN PLAYLISTS
@@ -260,56 +267,4 @@ INSERT INTO cancion_playlist (id_playlist, id_cancion, posicion) VALUES
 (3, 2,  2),   -- Something
 (3, 7,  3),   -- Love of My Life
 (3, 25, 4),   -- Instant Crush
-(3, 22, 5),   -- Frío Frío
-
--- Playlist 4: Lo Mejor del Reggaeton (sofia_r)
-(4, 11, 1),   -- Moscow Mule
-(4, 12, 2),   -- Me Porto Bonito
-(4, 13, 3),   -- Tití Me Preguntó
-(4, 14, 4),   -- Safaera
-(4, 15, 5),   -- Yo Perreo Sola
-
--- Playlist 5: Hits 2022 (sofia_r)
-(5, 11, 1),   -- Moscow Mule
-(5, 13, 2),   -- Tití Me Preguntó
-(5, 19, 3),   -- Anti-Hero
-(5, 20, 4),   -- Lavender Haze
-(5, 12, 5);   -- Me Porto Bonito
-
-
--- ============================================================
---  CONSULTAS DE VERIFICACIÓN
---  Ejecuta estos SELECT para confirmar que todo quedó bien
--- ============================================================
-
--- Total de registros por tabla
-SELECT 'usuario'          AS tabla, COUNT(*) AS total FROM usuario
-UNION ALL
-SELECT 'artista',                  COUNT(*) FROM artista
-UNION ALL
-SELECT 'album',                   COUNT(*) FROM album
-UNION ALL
-SELECT 'cancion',                    COUNT(*) FROM cancion
-UNION ALL
-SELECT 'playlist',                COUNT(*) FROM playlist
-UNION ALL
-SELECT 'cancion_playlist',           COUNT(*) FROM cancion_playlist;
-
--- Búsqueda por artista (RF7)
-SELECT c.titulo, a.nombre AS artista, al.titulo AS album, c.duracion_segundos
-FROM   cancion c
-JOIN   artista a  ON c.id_artista = a.id_artista
-LEFT JOIN album al ON c.id_album  = al.id_album
-WHERE  a.nombre LIKE '%Queen%'
-ORDER BY al.titulo, c.numero_track;
-
--- Ver una playlist completa con sus canciones (RF5, RF11)
-SELECT p.nombre AS playlist, u.nombre_usuario, c.titulo AS cancion,
-       ar.nombre AS artista, ps.posicion
-FROM   cancion_playlist ps
-JOIN   playlist p  ON ps.id_playlist = p.id_playlist
-JOIN   usuario u      ON p.id_usuario      = u.id_usuario
-JOIN   cancion c      ON ps.id_cancion     = c.id_cancion
-JOIN   artista ar   ON c.id_artista    = ar.id_artista
-WHERE  p.id_playlist = 1
-ORDER BY ps.posicion;
+(3, 22, 5)   -- Frío Frío
