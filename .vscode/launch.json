@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-MusiczoneBackendApplication<musiczone>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.musiczone.MusiczoneBackendApplication",
+            "projectName": "musiczone",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
