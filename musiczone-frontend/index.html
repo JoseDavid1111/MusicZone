@@ -1,38 +1,232 @@
-<!DOCTYPE html> <!--Le dice al navegador "esto es una página web-->
-<html lang="es"> 
+<!DOCTYPE html>
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title> MusicZone</title>
-    <link rel="stylesheet" href="style.css"> <!-- Conectamos e archivo .css -->
-<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MusicZone</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
 <body>
 
-  <!-- ENCABEZADO -->
-  <header>
-    <h1>MusicZone</h1>
-    <div id="cajabusqueda">
-    <button id="boton1">
-        <div id="lupacirculo"></div>
-        <div id="lupapalito"></div>
-    </button>
-    <input type="text" id="buscador" placeholder="¿Qué quieres escuchar?">
+  <!-- ══════════════════════════════════════ -->
+  <!--  PANTALLA DE LOGIN                    -->
+  <!-- ══════════════════════════════════════ -->
+  <div id="pantalla-login" class="pantalla activa">
+    <div class="login-bg">
+      <div class="login-noise"></div>
+      <div class="login-glow"></div>
     </div>
-  </header>
 
-  <!-- ZONA PRINCIPAL -->
-  <div id="principal">
+    <div class="login-card">
+      <div class="login-logo">
+        <span class="logo-icon">♪</span>
+        <h1>MusicZone</h1>
+      </div>
 
-    <!-- MENÚ IZQUIERDO -->
-    <nav id="menu">
-    </nav>
+      <!-- Tabs login / registrar -->
+      <div class="auth-tabs">
+        <button class="tab-btn activo" id="tab-login" onclick="mostrarTab('login')">Iniciar sesión</button>
+        <button class="tab-btn" id="tab-registro" onclick="mostrarTab('registro')">Crear cuenta</button>
+      </div>
 
-    <!-- CONTENIDO: las tarjetas -->
-    <main id="contenido">
-    </main>
+      <!-- Formulario Login -->
+      <div id="form-login" class="auth-form">
+        <div class="campo">
+          <label>Usuario</label>
+          <input type="text" id="login-usuario" placeholder="Tu nombre de usuario" />
+        </div>
+        <div class="campo">
+          <label>Contraseña</label>
+          <input type="password" id="login-password" placeholder="••••••••" />
+        </div>
+        <div id="login-error" class="mensaje-error oculto"></div>
+        <button class="btn-primario" onclick="hacerLogin()">Entrar</button>
+      </div>
 
+      <!-- Formulario Registro -->
+      <div id="form-registro" class="auth-form oculto">
+        <div class="campo">
+          <label>Usuario</label>
+          <input type="text" id="reg-usuario" placeholder="Elige un nombre de usuario" />
+        </div>
+        <div class="campo">
+          <label>Correo</label>
+          <input type="email" id="reg-correo" placeholder="tu@correo.com" />
+        </div>
+        <div class="campo">
+          <label>Contraseña</label>
+          <input type="password" id="reg-password" placeholder="Mínimo 6 caracteres" />
+        </div>
+        <div id="reg-error" class="mensaje-error oculto"></div>
+        <div id="reg-exito" class="mensaje-exito oculto"></div>
+        <button class="btn-primario" onclick="hacerRegistro()">Crear cuenta</button>
+      </div>
+    </div>
   </div>
 
-  <script src="script.js"></script>
+  <!-- ══════════════════════════════════════ -->
+  <!--  APP PRINCIPAL (se muestra al login)  -->
+  <!-- ══════════════════════════════════════ -->
+  <div id="pantalla-app" class="pantalla">
 
-</body>  
+    <!-- HEADER -->
+    <header id="header">
+      <div class="header-izq">
+        <span class="logo-small">♪ MusicZone</span>
+      </div>
+      <div class="header-busqueda">
+        <span class="icono-busqueda">🔍</span>
+        <input type="text" id="buscador-global" placeholder="Buscar canciones o artistas..." oninput="buscarGlobal()" />
+      </div>
+      <div class="header-der">
+        <span id="nombre-usuario-header" class="usuario-chip"></span>
+        <button class="btn-logout" onclick="cerrarSesion()">Salir</button>
+      </div>
+    </header>
+
+    <!-- LAYOUT PRINCIPAL -->
+    <div id="layout">
+
+      <!-- SIDEBAR -->
+      <nav id="sidebar">
+        <div class="nav-section">
+          <p class="nav-label">Menú</p>
+          <button class="nav-btn activo" onclick="mostrarSeccion('inicio')" id="nav-inicio">
+            <span>🏠</span> Inicio
+          </button>
+          <button class="nav-btn" onclick="mostrarSeccion('canciones')" id="nav-canciones">
+            <span>🎵</span> Canciones
+          </button>
+          <button class="nav-btn" onclick="mostrarSeccion('artistas')" id="nav-artistas">
+            <span>🎤</span> Artistas
+          </button>
+          <button class="nav-btn" onclick="mostrarSeccion('playlists')" id="nav-playlists">
+            <span>📋</span> Mis Playlists
+          </button>
+        </div>
+        <div class="nav-section" id="sidebar-playlists">
+          <p class="nav-label">Mis listas</p>
+          <div id="lista-playlists-sidebar"></div>
+        </div>
+      </nav>
+
+      <!-- CONTENIDO PRINCIPAL -->
+      <main id="contenido-principal">
+
+        <!-- SECCIÓN: INICIO -->
+        <section id="seccion-inicio" class="seccion activa">
+          <div class="bienvenida">
+            <h2 id="saludo-bienvenida">Bienvenido 👋</h2>
+            <p class="subtitulo">Tu música, tu mundo.</p>
+          </div>
+          <h3 class="titulo-seccion">Canciones destacadas</h3>
+          <div id="canciones-inicio" class="grid-canciones"></div>
+        </section>
+
+        <!-- SECCIÓN: CANCIONES -->
+        <section id="seccion-canciones" class="seccion">
+          <h2 class="titulo-seccion">Todas las canciones</h2>
+          <div class="filtros">
+            <div class="campo-busqueda">
+              <input type="text" id="buscar-titulo" placeholder="Buscar por título..." oninput="filtrarCanciones()" />
+            </div>
+            <div class="campo-busqueda">
+              <input type="text" id="buscar-artista-campo" placeholder="Buscar por artista..." oninput="filtrarPorArtista()" />
+            </div>
+          </div>
+          <div id="lista-canciones" class="grid-canciones"></div>
+        </section>
+
+        <!-- SECCIÓN: ARTISTAS -->
+        <section id="seccion-artistas" class="seccion">
+          <h2 class="titulo-seccion">Artistas</h2>
+          <div id="lista-artistas" class="grid-artistas"></div>
+        </section>
+
+        <!-- SECCIÓN: PLAYLISTS -->
+        <section id="seccion-playlists" class="seccion">
+          <div class="seccion-header">
+            <h2 class="titulo-seccion">Mis Playlists</h2>
+            <button class="btn-primario btn-sm" onclick="abrirModalCrearPlaylist()">+ Nueva playlist</button>
+          </div>
+          <div id="lista-playlists" class="grid-playlists"></div>
+        </section>
+
+        <!-- SECCIÓN: DETALLE PLAYLIST -->
+        <section id="seccion-detalle-playlist" class="seccion">
+          <button class="btn-volver" onclick="mostrarSeccion('playlists')">← Volver</button>
+          <div id="detalle-playlist-contenido"></div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!--  MODALES                              -->
+  <!-- ══════════════════════════════════════ -->
+
+  <!-- Modal: Crear Playlist -->
+  <div id="modal-crear-playlist" class="modal-overlay oculto" onclick="cerrarModalSiOverlay(event, 'modal-crear-playlist')">
+    <div class="modal-card">
+      <h3>Nueva Playlist</h3>
+      <div class="campo">
+        <label>Nombre</label>
+        <input type="text" id="nueva-playlist-nombre" placeholder="Mi playlist favorita" />
+      </div>
+      <div class="campo">
+        <label>Descripción (opcional)</label>
+        <input type="text" id="nueva-playlist-desc" placeholder="Una descripción..." />
+      </div>
+      <div id="modal-playlist-error" class="mensaje-error oculto"></div>
+      <div class="modal-botones">
+        <button class="btn-secundario" onclick="cerrarModal('modal-crear-playlist')">Cancelar</button>
+        <button class="btn-primario" onclick="crearPlaylist()">Crear</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Agregar canción a playlist -->
+  <div id="modal-agregar-cancion" class="modal-overlay oculto" onclick="cerrarModalSiOverlay(event, 'modal-agregar-cancion')">
+    <div class="modal-card">
+      <h3>Agregar canción</h3>
+      <p class="modal-subtitulo">Selecciona una canción para agregar a la playlist</p>
+      <div class="campo">
+        <input type="text" id="buscar-cancion-modal" placeholder="Buscar canción..." oninput="filtrarCancionesModal()" />
+      </div>
+      <div id="lista-canciones-modal" class="lista-modal"></div>
+      <div class="modal-botones">
+        <button class="btn-secundario" onclick="cerrarModal('modal-agregar-cancion')">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Editar Playlist -->
+  <div id="modal-editar-playlist" class="modal-overlay oculto" onclick="cerrarModalSiOverlay(event, 'modal-editar-playlist')">
+    <div class="modal-card">
+      <h3>Editar Playlist</h3>
+      <div class="campo">
+        <label>Nombre</label>
+        <input type="text" id="editar-playlist-nombre" placeholder="Nombre de la playlist" />
+      </div>
+      <div class="campo">
+        <label>Descripción</label>
+        <input type="text" id="editar-playlist-desc" placeholder="Descripción..." />
+      </div>
+      <input type="hidden" id="editar-playlist-id" />
+      <div id="modal-editar-error" class="mensaje-error oculto"></div>
+      <div class="modal-botones">
+        <button class="btn-secundario" onclick="cerrarModal('modal-editar-playlist')">Cancelar</button>
+        <button class="btn-primario" onclick="guardarEdicionPlaylist()">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast de notificaciones -->
+  <div id="toast" class="toast oculto"></div>
+
+  <script src="script.js"></script>
+</body>
 </html>
