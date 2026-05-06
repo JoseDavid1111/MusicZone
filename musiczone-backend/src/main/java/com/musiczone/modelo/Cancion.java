@@ -47,7 +47,7 @@ public class Cancion {
     @Column(name = "genero", length = 80)
     private String genero;
 
-    @Column(name = "year_lanzamiento", columnDefinition = "YEAR")
+    @Column(name = "year_lanzamiento")
     private Integer yearLanzamiento;
 
     @OneToMany(mappedBy = "cancion")

@@ -8,6 +8,7 @@ import java.util.Optional;
 public interface UsuarioRepositorio extends JpaRepository<Usuario, Long> {
     //El optional se coloca por si el usuario no existe así regresa una lista vacia y no un error
 	Optional<Usuario> findByNombreUsuario(String nombreUsuario);
+	Optional<Usuario> findByCorreo(String correo);
 	
 	//Validaciones antes de registrar un usuario
     boolean existsByNombreUsuario(String nombreUsuario);

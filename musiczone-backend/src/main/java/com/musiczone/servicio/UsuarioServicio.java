@@ -26,8 +26,10 @@ public class UsuarioServicio implements IUsuarioServicio {
 
     @Override
     public LoginResponseDto login(LoginRequestDto dto) {
+        String identificador = dto.getNombreUsuario().trim();
         Usuario usuario = usuarioRepositorio
-            .findByNombreUsuario(dto.getNombreUsuario().trim())
+            .findByNombreUsuario(identificador)
+            .or(() -> usuarioRepositorio.findByCorreo(identificador))
             .orElse(null);
 
         if (usuario == null || !usuario.getActive()) return null;
@@ -47,13 +49,17 @@ public class UsuarioServicio implements IUsuarioServicio {
 
     @Override
     public UsuarioResponseDto registrar(UsuarioRequestDto dto) {
-        if (usuarioRepositorio.existsByNombreUsuario(dto.getNombreUsuario())) return null;
-        if (usuarioRepositorio.existsByCorreo(dto.getCorreo())) return null;
+        String nombreUsuario = dto.getNombreUsuario().trim();
+        String correo = dto.getCorreo().trim().toLowerCase();
+        String password = dto.getPassword().trim();
+
+        if (usuarioRepositorio.existsByNombreUsuario(nombreUsuario)) return null;
+        if (usuarioRepositorio.existsByCorreo(correo)) return null;
 
         Usuario usuario = new Usuario();
-        usuario.setNombreUsuario(dto.getNombreUsuario());
-        usuario.setPassword(passwordEncoder.encode(dto.getPassword()));
-        usuario.setCorreo(dto.getCorreo());
+        usuario.setNombreUsuario(nombreUsuario);
+        usuario.setPassword(passwordEncoder.encode(password));
+        usuario.setCorreo(correo);
         usuario.setActive(true);
         
         // ESTA LÍNEA ES VITAL PARA EVITAR EL ERROR 500

@@ -3,7 +3,7 @@ package com.musiczone.dto;
 import jakarta.validation.constraints.NotBlank;
 
 public class LoginRequestDto {
-    @NotBlank(message = "El nombre de usuario es obligatorio")
+    @NotBlank(message = "El usuario o correo es obligatorio")
     private String nombreUsuario;
     @NotBlank(message = "La contrasena es obligatoria")
     private String password;

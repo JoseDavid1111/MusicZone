@@ -34,8 +34,7 @@ public class Album {
     @JsonIgnoreProperties({"albumes", "canciones"})
     private Artista artista;
 
-    @Column(name = "year_lanzamiento", columnDefinition = "YEAR") 
-    //En la BD esta como year acá lo manejamos como INTEGER, por lo que se usa columnDefinition, asi solo dejo especificado para evitar errores
+    @Column(name = "year_lanzamiento")
     private Integer yearLanzamiento;
 
     @Column(name = "portada_url", length = 500)

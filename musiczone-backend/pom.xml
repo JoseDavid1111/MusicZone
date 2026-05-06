@@ -16,7 +16,7 @@
     <artifactId>musiczone</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>musiczone</name>
-    <description>Proyecto MusicZone con Spring Boot, MySQL y API REST</description>
+    <description>Proyecto MusicZone con Spring Boot, PostgreSQL y API REST</description>
 
     <properties>
         <java.version>17</java.version>
@@ -55,8 +55,8 @@
         </dependency>
 
         <dependency>
-            <groupId>com.mysql</groupId>
-            <artifactId>mysql-connector-j</artifactId>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
 
