@@ -21,17 +21,24 @@ Características principales:
 * Interfaz de usuario adaptable: Una interfaz limpia desarrollada con tecnologías web estándar.
 -----------------------------------
 ## 🛠️ Tech StackBackend
-* Framework: Spring Boot (Java)
+* Framework: Spring Boot (Java), Reacr Vite
+  
 * Architecture: REST API (Controller-Service-Repository pattern)
-* Security: Lógica de autenticación para puntos finales protegidos.
-* Database: 
+  
+* Security: Se proyeca utiliar tokens con jwt para asegurar las credenciales y evitar exponerlas en los viajes de los json, principalemnte en la parte de login
+  
+Database: Se contempla usar 2 ramas:
+  * Supabase: Se guardaran los archivos MP3 de las canciones
+  * MongoDB | Atlas: Se guardará la base de datos no relacional con las siguientes colecciones
+    <img width="539" height="420" alt="image" src="https://github.com/user-attachments/assets/5e56cb09-3290-4061-95bb-4bd7ed9778c5" />
+
+* Flujo de funcionamiento: Teniendo en cuenta los nuevos cambios, se proyecta:
+  <img width="571" height="364" alt="image" src="https://github.com/user-attachments/assets/9de34c16-2fd8-4cbf-be3e-75575255ca3c" />
+
 
 Frontend
 * Languages: React, Java, JavaScript
 * UI Style: Dark mode, card-based layout (Spotify-style).
-
-DevOps & Tools
-* Version Control: Git & GitHub
 
 ----------------------------------------------------------
 ## 📂 Project Structure
@@ -55,4 +62,3 @@ MusicZone/
   1. Clone the repository:
      git clone https://github.com/JoseDavid1111/MusicZone.git
      cd MusicZone
-   
