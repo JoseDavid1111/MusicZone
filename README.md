@@ -1,63 +1,64 @@
 # MusicZone
 
-MusicZone is a full-stack web application designed to simulate the core functionality of a digital music streaming platform. Inspired by the visual interfaces of services like Netflix, it allows users to explore a vast catalog of songs, manage personalized playlists, and search for their favorite artists—all through a structured, decoupled architecture.
+-----------------------------------
+## 🛠️ Participantes
+* Angela Lozano Pulido
+* Gabriel Alfonso Vera
+* Jose David Meneses 
 
-Overview
-The project focuses on the "Music Management" problem, providing a robust solution for organizing musical data. Built with a Three-Tier Architecture, it leverages a Spring Boot REST API and a dynamic frontend to deliver a seamless user experience.
+MusicZone es una aplicación web full-stack diseñada para simular la funcionalidad principal de una plataforma de streaming de música digital. Inspirada en las interfaces visuales de servicios como Spotify, permite a los usuarios explorar un amplio catálogo de canciones, gestionar listas de reproducción personalizadas y buscar a sus artistas favoritos, todo ello a través de una arquitectura estructurada y desacoplada.
 
-Key Features:
+Descripción general: El proyecto se centra en la gestión musical, proporcionando una solución robusta para organizar datos musicales. Desarrollada con una arquitectura de tres capas, aprovecha una API REST de Spring Boot y un frontend dinámico para ofrecer una experiencia de usuario fluida.
 
-* Secure Authentication: User login system with credential validation against a relational database.
-* Netflix-Inspired Catalog: Browse songs with a focus on visual metadata (covers and details).
-* Advanced Search: Efficiently find tracks by Title or Artist.
-* Playlist Management (CRUD):
-* Create, rename, and delete custom playlists.
-   * Add or remove songs dynamically from any list.
-* Responsive UI: A clean interface built with standard web technologies.
+Características principales:
+
+* Autenticación segura: Sistema de inicio de sesión con validación de credenciales en una base de datos no relacional.
+* Catálogo inspirado en Spotify: Explora canciones con énfasis en información y en su guardado.
+* Búsqueda avanzada: Encuentra canciones fácilmente por título o artista.
+* Gestión de listas de reproducción (CRUD):
+* Crea, renombra, busca y elimina listas de reproducción personalizadas.
+   * Agrega o elimina canciones dinámicamente de cualquier lista.
+* Interfaz de usuario adaptable: Una interfaz limpia desarrollada con tecnologías web estándar.
 -----------------------------------
 ## 🛠️ Tech StackBackend
-
-* Framework: Spring Boot (Java)
+* Framework: Spring Boot (Java), Reacr Vite
+  
 * Architecture: REST API (Controller-Service-Repository pattern)
-* Security: Authentication logic for protected endpoints.
-* Database: Relational (MySQL/PostgreSQL)
+  
+* Security: Se proyeca utiliar tokens con jwt para asegurar las credenciales y evitar exponerlas en los viajes de los json, principalemnte en la parte de login
+  
+Database: Se contempla usar 2 ramas:
+  * Supabase: Se guardaran los archivos MP3 de las canciones
+  * MongoDB | Atlas: Se guardará la base de datos no relacional con las siguientes colecciones
+    <img width="539" height="420" alt="image" src="https://github.com/user-attachments/assets/5e56cb09-3290-4061-95bb-4bd7ed9778c5" />
+
+* Flujo de funcionamiento: Teniendo en cuenta los nuevos cambios, se proyecta:
+  <img width="571" height="364" alt="image" src="https://github.com/user-attachments/assets/9de34c16-2fd8-4cbf-be3e-75575255ca3c" />
+
 
 Frontend
+* Languages: React, Java, JavaScript
+* UI Style: Dark mode, card-based layout (Spotify-style).
 
-* Languages: HTML5, CSS3, JavaScript (Vanilla)
-* UI Style: Dark mode, card-based layout (Netflix-style).
-
-DevOps & Tools
-
-* Version Control: Git & GitHub
-* Deployment: Cloud-hosted environment (Development/Production parity).
--------------------------------------------
-## 📋 RequirementsFunctional (Highlights)
-
-* RF1-RF4: Secure login, validation, and error handling.
-* RF5-RF7: Full catalog visualization and search filters.
-* RF8-RF12: Complete Playlist lifecycle management.
-
-Non-Functional
-
-* Decoupled API-first approach.
-* Relational data integrity.
-* Cloud-ready configuration.
 ----------------------------------------------------------
 ## 📂 Project Structure
 
 ```text
 MusicZone/
-├── backend/           # Spring Boot Application
+├── musiczone-backend/           # Spring Boot Application
 │   └── src/           # API Logic & Database Config
-├── frontend/          # Web Interface
-│   ├── css/           # styling
-│   ├── js/            # API consumption & DOM logic
+├── musiczone-react/          # Web Interface
+│   ├── node_modules/           # styling
+│   ├── src/            # API consumption & DOM logic
 │   └── index.html     # Main entry point
+|   └── package-lock.json
+|   └── package.json
+|   └── vite.confing.js  
 └── README.md
 
 -----------------------------------------------------------------
 ⚙️ Installation & Setup
 
-   1. Clone the repository:
-   
+  1. Clone the repository:
+     git clone https://github.com/JoseDavid1111/MusicZone.git
+     cd MusicZone
