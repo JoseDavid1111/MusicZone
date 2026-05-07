@@ -1,14 +1,14 @@
 # MusicZone
 
 -----------------------------------
-## 🛠️ Participantes
+## 👤 Participantes
 * Angela Lozano Pulido
 * Gabriel Alfonso Vera
 * Jose David Meneses 
 
 MusicZone es una aplicación web full-stack diseñada para simular la funcionalidad principal de una plataforma de streaming de música digital. Inspirada en las interfaces visuales de servicios como Spotify, permite a los usuarios explorar un amplio catálogo de canciones, gestionar listas de reproducción personalizadas y buscar a sus artistas favoritos, todo ello a través de una arquitectura estructurada y desacoplada.
 
-Descripción general: El proyecto se centra en la gestión musical, proporcionando una solución robusta para organizar datos musicales. Desarrollada con una arquitectura de tres capas, aprovecha una API REST de Spring Boot y un frontend dinámico para ofrecer una experiencia de usuario fluida.
+El proyecto se centra en la gestión musical, proporcionando una solución robusta para organizar datos musicales. Desarrollada con una arquitectura de tres capas, aprovecha una API REST de Spring Boot y un frontend dinámico para ofrecer una experiencia de usuario fluida.
 
 Características principales:
 
@@ -22,6 +22,7 @@ Características principales:
 -----------------------------------
 ## 🛠️ Tech StackBackend
 * Framework: Spring Boot (Java), Reacr Vite
+* Languages: React, Java, JavaScript
   
 * Architecture: REST API (Controller-Service-Repository pattern)
   
@@ -35,10 +36,6 @@ Database: Se contempla usar 2 ramas:
 * Flujo de funcionamiento: Teniendo en cuenta los nuevos cambios, se proyecta:
   <img width="571" height="364" alt="image" src="https://github.com/user-attachments/assets/9de34c16-2fd8-4cbf-be3e-75575255ca3c" />
 
-
-Frontend
-* Languages: React, Java, JavaScript
-* UI Style: Dark mode, card-based layout (Spotify-style).
 
 ----------------------------------------------------------
 ## 📂 Project Structure
