@@ -32,6 +32,7 @@ Database: Se contempla usar 2 ramas:
   * Supabase: Se guardaran los archivos MP3 de las canciones
   * MongoDB | Atlas: Se guardará la base de datos no relacional con las siguientes colecciones
   * mongodb+srv://angelalozanouis2022:<db_password>@cluster0.aublw.mongodb.net/?appName=Cluster0
+  * Replace <db_password> with the password for the angelalozanouis2022 database user. 
     <img width="539" height="420" alt="image" src="https://github.com/user-attachments/assets/5e56cb09-3290-4061-95bb-4bd7ed9778c5" />
 
 * Flujo de funcionamiento: Teniendo en cuenta los nuevos cambios, se proyecta:
