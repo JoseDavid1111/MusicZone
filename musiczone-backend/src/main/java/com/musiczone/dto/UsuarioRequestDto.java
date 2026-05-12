@@ -4,7 +4,10 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+// DTO para recibir los datos al registrar un nuevo usuario
+// Las validaciones con jakarta.validation funcionan igual en MongoDB
 public class UsuarioRequestDto {
+
     @NotBlank(message = "El nombre de usuario es obligatorio")
     @Size(max = 50, message = "El nombre de usuario no puede superar 50 caracteres")
     private String nombreUsuario;

@@ -1,154 +1,78 @@
 package com.musiczone.modelo;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@Entity
-@Table(name = Cancion.TABLA_NAME)
+@Document(collection = "canciones")
 public class Cancion {
-    public static final String TABLA_NAME = "cancion";
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_cancion")
-    private Long id;
+    private String id;
 
-    @Column(name = "titulo", nullable = false, length = 200)
+    @Field("titulo")
     private String titulo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_artista", nullable = false)
-    @JsonIgnoreProperties({"albumes", "canciones"})
+    @Field("artista")
     private Artista artista;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_album", nullable =true) //el campo puede ser nulo, las canciones que son singles, existen sin albums
-    @JsonIgnoreProperties({"artista", "canciones"})
+    @Field("album")
     private Album album;
 
-    @Column(name = "duracion_segundos")
+    @Field("duracion_segundos")
     private Integer duracionSegundos;
 
-    @Column(name = "numero_track")
+    @Field("numero_track")
     private Integer numeroTrack;
 
-    @Column(name = "genero", length = 80)
+    @Field("genero")
     private String genero;
 
-    @Column(name = "year_lanzamiento")
+    @Field("year_lanzamiento")
     private Integer yearLanzamiento;
 
-    @OneToMany(mappedBy = "cancion")
-    @JsonIgnoreProperties({"cancion", "playlist"})
-    private List<CancionPlaylist> cancionesPlaylist = new ArrayList<>();
+    @Field("url_audio")
+    private String urlAudio;
 
-	public Cancion(Long id, String titulo, Artista artista, Album album, Integer duracionSegundos, Integer numeroTrack,
-			String genero, Integer yearLanzamiento, List<CancionPlaylist> cancionesPlaylist) {
-		super();
-		this.id = id;
-		this.titulo = titulo;
-		this.artista = artista;
-		this.album = album;
-		this.duracionSegundos = duracionSegundos;
-		this.numeroTrack = numeroTrack;
-		this.genero = genero;
-		this.yearLanzamiento = yearLanzamiento;
-		this.cancionesPlaylist = cancionesPlaylist;
-	}
-	
-	
+    public Cancion() {}
 
-	public Cancion() {
-	}
+    public Cancion(String id, String titulo, Artista artista, Album album, Integer duracionSegundos,
+            Integer numeroTrack, String genero, Integer yearLanzamiento, String urlAudio) {
+        this.id = id;
+        this.titulo = titulo;
+        this.artista = artista;
+        this.album = album;
+        this.duracionSegundos = duracionSegundos;
+        this.numeroTrack = numeroTrack;
+        this.genero = genero;
+        this.yearLanzamiento = yearLanzamiento;
+        this.urlAudio = urlAudio;
+    }
 
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
+    public String getTitulo() { return titulo; }
+    public void setTitulo(String titulo) { this.titulo = titulo; }
 
-	public Long getId() {
-		return id;
-	}
+    public Artista getArtista() { return artista; }
+    public void setArtista(Artista artista) { this.artista = artista; }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public Album getAlbum() { return album; }
+    public void setAlbum(Album album) { this.album = album; }
 
-	public String getTitulo() {
-		return titulo;
-	}
+    public Integer getDuracionSegundos() { return duracionSegundos; }
+    public void setDuracionSegundos(Integer duracionSegundos) { this.duracionSegundos = duracionSegundos; }
 
-	public void setTitulo(String titulo) {
-		this.titulo = titulo;
-	}
+    public Integer getNumeroTrack() { return numeroTrack; }
+    public void setNumeroTrack(Integer numeroTrack) { this.numeroTrack = numeroTrack; }
 
-	public Artista getArtista() {
-		return artista;
-	}
+    public String getGenero() { return genero; }
+    public void setGenero(String genero) { this.genero = genero; }
 
-	public void setArtista(Artista artista) {
-		this.artista = artista;
-	}
+    public Integer getYearLanzamiento() { return yearLanzamiento; }
+    public void setYearLanzamiento(Integer yearLanzamiento) { this.yearLanzamiento = yearLanzamiento; }
 
-	public Album getAlbum() {
-		return album;
-	}
-
-	public void setAlbum(Album album) {
-		this.album = album;
-	}
-
-	public Integer getDuracionSegundos() {
-		return duracionSegundos;
-	}
-
-	public void setDuracionSegundos(Integer duracionSegundos) {
-		this.duracionSegundos = duracionSegundos;
-	}
-
-	public Integer getNumeroTrack() {
-		return numeroTrack;
-	}
-
-	public void setNumeroTrack(Integer numeroTrack) {
-		this.numeroTrack = numeroTrack;
-	}
-
-	public String getGenero() {
-		return genero;
-	}
-
-	public void setGenero(String genero) {
-		this.genero = genero;
-	}
-
-	public Integer getYearLanzamiento() {
-		return yearLanzamiento;
-	}
-
-	public void setYearLanzamiento(Integer yearLanzamiento) {
-		this.yearLanzamiento = yearLanzamiento;
-	}
-
-	public List<CancionPlaylist> getCancionesPlaylist() {
-		return cancionesPlaylist;
-	}
-
-	public void setCancionesPlaylist(List<CancionPlaylist> cancionesPlaylist) {
-		this.cancionesPlaylist = cancionesPlaylist;
-	}
-    
-    
-
-    
+    public String getUrlAudio() { return urlAudio; }
+    public void setUrlAudio(String urlAudio) { this.urlAudio = urlAudio; }
 }
-

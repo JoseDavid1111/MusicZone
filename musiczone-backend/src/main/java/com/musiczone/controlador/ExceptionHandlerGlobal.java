@@ -10,9 +10,14 @@ import com.musiczone.dto.ErrorResponseDto;
 import java.util.ArrayList;
 import java.util.List;
 
+// Manejador global de excepciones — intercepta errores de toda la API
+// y los devuelve en formato estandarizado con ErrorResponseDto
+// Evita que Spring devuelva stacktraces crudos al cliente
 @ControllerAdvice
 public class ExceptionHandlerGlobal {
 
+    // Captura errores de validación de @Valid en los RequestBody
+    // Por ejemplo: campos obligatorios vacíos o formatos incorrectos
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponseDto> manejarValidacion(
             MethodArgumentNotValidException ex, WebRequest request) {
@@ -29,6 +34,7 @@ public class ExceptionHandlerGlobal {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    // Captura argumentos inválidos lanzados manualmente con throw new IllegalArgumentException
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponseDto> manejarIllegalArgument(
             IllegalArgumentException ex, WebRequest request) {
@@ -40,6 +46,8 @@ public class ExceptionHandlerGlobal {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    // Captura cualquier excepción no manejada por los handlers anteriores
+    // Es el último recurso para evitar que el servidor devuelva un 500 sin contexto
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDto> manejarExcepcionGeneral(
             Exception ex, WebRequest request) {

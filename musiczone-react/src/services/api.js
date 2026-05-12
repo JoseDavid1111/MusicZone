@@ -5,9 +5,20 @@
 
 const BASE = 'http://localhost:8081'
 
+// Obtiene el token guardado en localStorage
+function getToken() {
+  return localStorage.getItem('token')
+}
+
+// Si hay token lo agrega al header Authorization automáticamente
 async function request(path, options = {}) {
+  const token = getToken()
+
   const res = await fetch(`${BASE}${path}`, {
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
     ...options,
   })
   const data = await res.json()
@@ -17,17 +28,27 @@ async function request(path, options = {}) {
 
 // ── AUTH ─────────────────────────────────
 export const authService = {
-  login: (nombreUsuario, password) =>
-    request('/auth/login', {
+  login: async (nombreUsuario, password) => {
+    const data = await request('/auth/login', {
       method: 'POST',
       body: JSON.stringify({ nombreUsuario, password }),
-    }),
+    })
+    // Guarda el token automáticamente al hacer login
+    if (data.datos?.token) {
+      localStorage.setItem('token', data.datos.token)
+    }
+    return data
+  },
 
   registrar: (nombreUsuario, correo, password) =>
     request('/auth/registrar', {
       method: 'POST',
       body: JSON.stringify({ nombreUsuario, correo, password }),
     }),
+
+  logout: () => {
+    localStorage.removeItem('token')
+  },
 }
 
 // ── CANCIONES ────────────────────────────

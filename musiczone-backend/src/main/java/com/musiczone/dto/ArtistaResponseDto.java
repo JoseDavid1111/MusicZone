@@ -1,7 +1,11 @@
 package com.musiczone.dto;
 
+// DTO que se usa para devolver datos del artista en las respuestas de la API
+// Evita exponer directamente el modelo y permite controlar qué campos se envían
 public class ArtistaResponseDto {
-    private Long id;
+
+    // Cambia de Long a String por el ObjectId de MongoDB
+    private String id;
     private String nombre;
     private String genero;
     private String pais;
@@ -10,7 +14,7 @@ public class ArtistaResponseDto {
 
     public ArtistaResponseDto() {}
 
-    public ArtistaResponseDto(Long id, String nombre, String genero, 
+    public ArtistaResponseDto(String id, String nombre, String genero,
             String pais, String bio, String perfilUrl) {
         this.id = id;
         this.nombre = nombre;
@@ -20,8 +24,8 @@ public class ArtistaResponseDto {
         this.perfilUrl = perfilUrl;
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
     public String getGenero() { return genero; }

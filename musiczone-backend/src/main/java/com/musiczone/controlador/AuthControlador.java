@@ -14,6 +14,8 @@ import com.musiczone.dto.UsuarioRequestDto;
 import com.musiczone.dto.UsuarioResponseDto;
 import com.musiczone.servicio.UsuarioServicio;
 
+// Controlador de autenticación — maneja registro y login
+// El login ahora devuelve un JWT en el campo token del LoginResponseDto
 @RestController
 @RequestMapping("/auth")
 public class AuthControlador {
@@ -23,7 +25,9 @@ public class AuthControlador {
     public AuthControlador(UsuarioServicio usuarioServicio) {
         this.usuarioServicio = usuarioServicio;
     }
-    
+
+    // Registro de nuevo usuario
+    // Retorna 400 si el nombre de usuario o correo ya existen
     @PostMapping("/registrar")
     public ResponseEntity<UsuarioResponseDto> registrar(@RequestBody UsuarioRequestDto dto) {
         UsuarioResponseDto response = usuarioServicio.registrar(dto);
@@ -32,7 +36,9 @@ public class AuthControlador {
         }
         return ResponseEntity.ok(response);
     }
-    
+
+    // Login — retorna 401 si las credenciales son incorrectas
+    // Si es exitoso devuelve los datos del usuario y el JWT en el campo token
     @PostMapping("/login")
     public ResponseEntity<RespuestaApi<LoginResponseDto>> iniciarSesion(
             @Valid @RequestBody LoginRequestDto request) {

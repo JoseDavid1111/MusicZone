@@ -2,8 +2,12 @@ package com.musiczone.dto;
 
 import java.time.LocalDateTime;
 
+// DTO para devolver los datos del usuario en las respuestas de la API
+// El password nunca se incluye aquí por seguridad
 public class UsuarioResponseDto {
-    private Long id;
+
+    // Cambia de Long a String por el ObjectId de MongoDB
+    private String id;
     private String nombreUsuario;
     private String correo;
     private Boolean active;
@@ -11,7 +15,7 @@ public class UsuarioResponseDto {
 
     public UsuarioResponseDto() {}
 
-    public UsuarioResponseDto(Long id, String nombreUsuario, String correo, 
+    public UsuarioResponseDto(String id, String nombreUsuario, String correo,
             Boolean active, LocalDateTime fechaCreacion) {
         this.id = id;
         this.nombreUsuario = nombreUsuario;
@@ -20,8 +24,8 @@ public class UsuarioResponseDto {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
     public String getNombreUsuario() { return nombreUsuario; }
     public void setNombreUsuario(String nombreUsuario) { this.nombreUsuario = nombreUsuario; }
     public String getCorreo() { return correo; }

@@ -3,19 +3,21 @@ package com.musiczone.dto;
 import jakarta.validation.constraints.NotNull;
 
 public class AgregarCancionPlaylistDto {
+
+    // Cambia de Long a String por el ObjectId de MongoDB
     @NotNull(message = "El id de la cancion es obligatorio")
-    private Long idCancion;
+    private String idCancion;
     private Integer posicion;
 
     public AgregarCancionPlaylistDto() {}
 
-    public AgregarCancionPlaylistDto(Long idCancion, Integer posicion) {
+    public AgregarCancionPlaylistDto(String idCancion, Integer posicion) {
         this.idCancion = idCancion;
         this.posicion = posicion;
     }
 
-    public Long getIdCancion() { return idCancion; }
-    public void setIdCancion(Long idCancion) { this.idCancion = idCancion; }
+    public String getIdCancion() { return idCancion; }
+    public void setIdCancion(String idCancion) { this.idCancion = idCancion; }
     public Integer getPosicion() { return posicion; }
     public void setPosicion(Integer posicion) { this.posicion = posicion; }
 }

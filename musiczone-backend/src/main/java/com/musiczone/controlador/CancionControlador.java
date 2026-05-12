@@ -11,6 +11,9 @@ import com.musiczone.dto.RespuestaApi;
 import com.musiczone.servicio.CancionServicio;
 import java.util.List;
 
+// Controlador de canciones — solo operaciones de lectura
+// Las canciones son gestionadas directamente en MongoDB por los administradores
+// no hay endpoints de creación o eliminación desde la API
 @RestController
 @RequestMapping("/canciones")
 public class CancionControlador {
@@ -21,12 +24,14 @@ public class CancionControlador {
         this.cancionServicio = cancionServicio;
     }
 
+    // Devuelve todas las canciones con su url_audio para reproducción
     @GetMapping
     public ResponseEntity<RespuestaApi<List<CancionResponseDto>>> listarTodas() {
         List<CancionResponseDto> canciones = cancionServicio.listarTodas();
         return ResponseEntity.ok(new RespuestaApi<>(true, "Canciones obtenidas exitosamente", canciones, HttpStatus.OK.value()));
     }
 
+    // Búsqueda parcial por título — útil para el buscador del frontend
     @GetMapping("/buscar")
     public ResponseEntity<RespuestaApi<List<CancionResponseDto>>> buscarPorTitulo(
             @RequestParam String titulo) {
@@ -34,6 +39,7 @@ public class CancionControlador {
         return ResponseEntity.ok(new RespuestaApi<>(true, "Busqueda por titulo exitosa", canciones, HttpStatus.OK.value()));
     }
 
+    // Búsqueda por nombre de artista usando regex en MongoDB
     @GetMapping("/buscar-por-artista")
     public ResponseEntity<RespuestaApi<List<CancionResponseDto>>> buscarPorArtista(
             @RequestParam String artista) {

@@ -1,128 +1,71 @@
 package com.musiczone.modelo;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
-@Entity
-@Table(name = Usuario.TABLA_NAME)
+// En MongoDB no se usa @OneToMany para playlists
+// Las playlists se consultan por separado usando el nombre de usuario como referencia
+// Esto evita documentos de usuario enormes con listas anidadas
+@Document(collection = "usuarios")
 public class Usuario {
-    public static final String TABLA_NAME = "usuario";
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_usuario") // Esto debe coincidir con tu .sql
-    private Long id;
+    private String id;
 
-    @Column(name = "nombre_usuario", nullable = false, unique = true, length = 50)
+    // @Indexed(unique = true) garantiza que no haya dos usuarios con el mismo nombre
+    // equivalente al UNIQUE constraint de PostgreSQL
+    @Indexed(unique = true)
+    @Field("nombre_usuario")
     private String nombreUsuario;
-    
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) //se usa para que el password no salga en el endpoint, no viaje en el JSON por seguridad
-    @Column(name = "password", nullable = false, length = 255)
+
+    // @JsonProperty(WRITE_ONLY) se mantiene igual que en JPA
+    // el password nunca viaja en las respuestas JSON por seguridad
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Field("password")
     private String password;
 
-    @Column(name = "correo", nullable = false, unique = true, length = 100)
+    @Indexed(unique = true)
+    @Field("correo")
     private String correo;
 
-    @Column(name = "active", nullable = false)
+    @Field("active")
     private Boolean active;
 
-    @Column(name = "fecha_creacion", nullable = false, updatable = false)
+    @Field("fecha_creacion")
     private LocalDateTime fechaCreacion;
 
-    @OneToMany(mappedBy = "usuario")
-    @JsonIgnoreProperties("usuario")
-    private List<Playlist> playlists = new ArrayList<>();
+    public Usuario() {}
 
-	public Usuario(Long id, String nombreUsuario, String password, String correo, Boolean active,
-			LocalDateTime fechaCreacion, List<Playlist> playlists) {
-		super();
-		this.id = id;
-		this.nombreUsuario = nombreUsuario;
-		this.password = password;
-		this.correo = correo;
-		this.active = active;
-		this.fechaCreacion = fechaCreacion;
-		this.playlists = playlists;
-	}
+    public Usuario(String id, String nombreUsuario, String password, String correo,
+            Boolean active, LocalDateTime fechaCreacion) {
+        this.id = id;
+        this.nombreUsuario = nombreUsuario;
+        this.password = password;
+        this.correo = correo;
+        this.active = active;
+        this.fechaCreacion = fechaCreacion;
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public String getNombreUsuario() { return nombreUsuario; }
+    public void setNombreUsuario(String nombreUsuario) { this.nombreUsuario = nombreUsuario; }
 
-	public String getNombreUsuario() {
-		return nombreUsuario;
-	}
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 
-	public void setNombreUsuario(String nombreUsuario) {
-		this.nombreUsuario = nombreUsuario;
-	}
+    public String getCorreo() { return correo; }
+    public void setCorreo(String correo) { this.correo = correo; }
 
-	public String getPassword() {
-		return password;
-	}
+    public Boolean getActive() { return active; }
+    public void setActive(Boolean active) { this.active = active; }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getCorreo() {
-		return correo;
-	}
-
-	public void setCorreo(String correo) {
-		this.correo = correo;
-	}
-
-	public Boolean getActive() {
-		return active;
-	}
-
-	public void setActive(Boolean active) {
-		this.active = active;
-	}
-
-	public LocalDateTime getFechaCreacion() {
-		return fechaCreacion;
-	}
-
-	public void setFechaCreacion(LocalDateTime fechaCreacion) {
-		this.fechaCreacion = fechaCreacion;
-	}
-
-	public List<Playlist> getPlaylists() {
-		return playlists;
-	}
-
-	public void setPlaylists(List<Playlist> playlists) {
-		this.playlists = playlists;
-	}
-
-	public static String getTablaName() {
-		return TABLA_NAME;
-	}
-
-	public Usuario() {
-	}
-    
-    
-    
+    public LocalDateTime getFechaCreacion() { return fechaCreacion; }
+    public void setFechaCreacion(LocalDateTime fechaCreacion) { this.fechaCreacion = fechaCreacion; }
 }
-
-

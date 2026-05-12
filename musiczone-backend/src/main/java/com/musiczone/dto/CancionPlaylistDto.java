@@ -1,60 +1,34 @@
 package com.musiczone.dto;
 
+// DTO que representa una canción dentro de una playlist
+// En JPA incluía album porque venía de la tabla cancion_playlist con joins
+// En MongoDB el album se omite porque CancionPlaylist solo guarda titulo y artista embebidos
 public class CancionPlaylistDto {
-    private Long idCancion;
+
+    // Cambia de Long a String por el ObjectId de MongoDB
+    private String idCancion;
     private String titulo;
     private String artista;
-    private String album;
     private Integer posicion;
 
     public CancionPlaylistDto() {}
 
-    public CancionPlaylistDto(Long idCancion, String titulo, String artista, 
-            String album, Integer posicion) {
+    public CancionPlaylistDto(String idCancion, String titulo, String artista, Integer posicion) {
         this.idCancion = idCancion;
         this.titulo = titulo;
         this.artista = artista;
-        this.album = album;
         this.posicion = posicion;
     }
 
-    public Long getIdCancion() { 
-    	return idCancion; 
-    }
-    
-    public void setIdCancion(Long idCancion) { 
-    	this.idCancion = idCancion; 
-    }
-    
-    public String getTitulo() { 
-    	return titulo; 
-    }
-    
-    public void setTitulo(String titulo) { 
-    	this.titulo = titulo;
-    }
-    
-    public String getArtista() { 
-    	return artista; 
-    }
-    
-    public void setArtista(String artista) { 
-    	this.artista = artista; 
-    }
-    
-    public String getAlbum() { 
-    	return album; 
-    }
-    
-    public void setAlbum(String album) { 
-    	this.album = album; 
-    }
-    
-    public Integer getPosicion() { 
-    	return posicion; 
-    }
-    
-    public void setPosicion(Integer posicion) { 
-    	this.posicion = posicion; 
-    }
+    public String getIdCancion() { return idCancion; }
+    public void setIdCancion(String idCancion) { this.idCancion = idCancion; }
+
+    public String getTitulo() { return titulo; }
+    public void setTitulo(String titulo) { this.titulo = titulo; }
+
+    public String getArtista() { return artista; }
+    public void setArtista(String artista) { this.artista = artista; }
+
+    public Integer getPosicion() { return posicion; }
+    public void setPosicion(Integer posicion) { this.posicion = posicion; }
 }

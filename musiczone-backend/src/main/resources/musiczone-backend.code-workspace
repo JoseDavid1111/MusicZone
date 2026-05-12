@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "../../.."
+		},
+		{
+			"path": "../../../../musiczone-frontend"
+		},
+		{
+			"path": "../../../../.vscode"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "musiczone-frontend"
+	}
+}

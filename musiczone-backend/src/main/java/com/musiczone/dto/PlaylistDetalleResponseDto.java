@@ -3,11 +3,16 @@ package com.musiczone.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
+// DTO para la respuesta detallada de una playlist incluyendo sus canciones
+// En JPA tenía idUsuario (Long) y nombreUsuario por separado porque venían de un JOIN
+// En MongoDB solo se guarda el nombreUsuario como referencia, no hay idUsuario separado
 public class PlaylistDetalleResponseDto {
-    private Long id;
+
+    // Cambia de Long a String por el ObjectId de MongoDB
+    private String id;
     private String nombre;
     private String descripcion;
-    private Long idUsuario;
+    // Se elimina idUsuario — en MongoDB la playlist solo referencia al usuario por nombre
     private String nombreUsuario;
     private LocalDateTime fechaCreacion;
     private LocalDateTime fechaActualizacion;
@@ -15,27 +20,24 @@ public class PlaylistDetalleResponseDto {
 
     public PlaylistDetalleResponseDto() {}
 
-    public PlaylistDetalleResponseDto(Long id, String nombre, String descripcion, Long idUsuario,
+    public PlaylistDetalleResponseDto(String id, String nombre, String descripcion,
             String nombreUsuario, LocalDateTime fechaCreacion, LocalDateTime fechaActualizacion,
             List<CancionPlaylistDto> canciones) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
-        this.idUsuario = idUsuario;
         this.nombreUsuario = nombreUsuario;
         this.fechaCreacion = fechaCreacion;
         this.fechaActualizacion = fechaActualizacion;
         this.canciones = canciones;
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
-    public Long getIdUsuario() { return idUsuario; }
-    public void setIdUsuario(Long idUsuario) { this.idUsuario = idUsuario; }
     public String getNombreUsuario() { return nombreUsuario; }
     public void setNombreUsuario(String nombreUsuario) { this.nombreUsuario = nombreUsuario; }
     public LocalDateTime getFechaCreacion() { return fechaCreacion; }

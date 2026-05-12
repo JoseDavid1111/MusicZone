@@ -1,32 +1,37 @@
 package com.musiczone.servicio;
 
+import java.time.LocalDateTime;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import com.musiczone.dto.LoginRequestDto;
 import com.musiczone.dto.LoginResponseDto;
 import com.musiczone.dto.UsuarioRequestDto;
 import com.musiczone.dto.UsuarioResponseDto;
 import com.musiczone.modelo.Usuario;
 import com.musiczone.repositorio.UsuarioRepositorio;
+import com.musiczone.seguridad.JwtUtil;
 
 @Service
-@Transactional
 public class UsuarioServicio implements IUsuarioServicio {
+	
+	@Autowired
+	private JwtUtil jwtUtil;
 
     private final UsuarioRepositorio usuarioRepositorio;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public UsuarioServicio(UsuarioRepositorio usuarioRepositorio, 
-            BCryptPasswordEncoder passwordEncoder) {
+    public UsuarioServicio(UsuarioRepositorio usuarioRepositorio) {
         this.usuarioRepositorio = usuarioRepositorio;
-        this.passwordEncoder = passwordEncoder;
+        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     @Override
     public LoginResponseDto login(LoginRequestDto dto) {
         String identificador = dto.getNombreUsuario().trim();
+
         Usuario usuario = usuarioRepositorio
             .findByNombreUsuario(identificador)
             .or(() -> usuarioRepositorio.findByCorreo(identificador))
@@ -34,16 +39,18 @@ public class UsuarioServicio implements IUsuarioServicio {
 
         if (usuario == null || !usuario.getActive()) return null;
 
-        // Comparación limpia
         if (!passwordEncoder.matches(dto.getPassword().trim(), usuario.getPassword())) {
             return null;
         }
+
+        String token = jwtUtil.generarToken(usuario.getNombreUsuario());
 
         return new LoginResponseDto(
             usuario.getId(),
             usuario.getNombreUsuario(),
             usuario.getCorreo(),
-            usuario.getActive()
+            usuario.getActive(),
+            token
         );
     }
 
@@ -61,9 +68,7 @@ public class UsuarioServicio implements IUsuarioServicio {
         usuario.setPassword(passwordEncoder.encode(password));
         usuario.setCorreo(correo);
         usuario.setActive(true);
-        
-        // ESTA LÍNEA ES VITAL PARA EVITAR EL ERROR 500
-        usuario.setFechaCreacion(java.time.LocalDateTime.now()); 
+        usuario.setFechaCreacion(LocalDateTime.now());
 
         Usuario guardado = usuarioRepositorio.save(usuario);
         return mapearUsuario(guardado);
@@ -78,7 +83,7 @@ public class UsuarioServicio implements IUsuarioServicio {
     }
 
     @Override
-    public UsuarioResponseDto buscarUsuario(Long id) {
+    public UsuarioResponseDto buscarUsuario(String id) {
         Usuario usuario = usuarioRepositorio.findById(id).orElse(null);
         if (usuario == null) return null;
         return mapearUsuario(usuario);

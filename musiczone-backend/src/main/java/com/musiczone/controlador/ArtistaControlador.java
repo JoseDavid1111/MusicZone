@@ -12,6 +12,8 @@ import com.musiczone.dto.RespuestaApi;
 import com.musiczone.servicio.ArtistaServicio;
 import java.util.List;
 
+// No hay cambios estructurales en los controladores
+// Solo cambia el tipo del id de Long a String por el ObjectId de MongoDB
 @RestController
 @RequestMapping("/artistas")
 public class ArtistaControlador {
@@ -28,8 +30,9 @@ public class ArtistaControlador {
         return ResponseEntity.ok(new RespuestaApi<>(true, "Artistas obtenidos exitosamente", artistas, HttpStatus.OK.value()));
     }
 
+    // El id cambia de Long a String por el ObjectId de MongoDB
     @GetMapping("/{id}")
-    public ResponseEntity<RespuestaApi<ArtistaResponseDto>> buscarArtista(@PathVariable Long id) {
+    public ResponseEntity<RespuestaApi<ArtistaResponseDto>> buscarArtista(@PathVariable String id) {
         ArtistaResponseDto artista = artistaServicio.buscarArtista(id);
         if (artista == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)

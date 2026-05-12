@@ -19,6 +19,8 @@ import com.musiczone.dto.RespuestaApi;
 import com.musiczone.servicio.PlaylistServicio;
 import java.util.List;
 
+// Controlador de playlists — maneja el CRUD completo y la gestión de canciones
+// Todos los ids cambian de Long a String por el ObjectId de MongoDB
 @RestController
 @RequestMapping("/playlists")
 public class PlaylistControlador {
@@ -29,17 +31,23 @@ public class PlaylistControlador {
         this.playlistServicio = playlistServicio;
     }
 
-    @GetMapping("/usuario/{idUsuario}")
+    // En JPA se buscaba por idUsuario (Long)
+    // En MongoDB se busca por nombreUsuario (String)
+    @GetMapping("/usuario/{nombreUsuario}")
     public ResponseEntity<RespuestaApi<List<PlaylistResponseDto>>> listarPorUsuario(
-            @PathVariable Long idUsuario) {
-        List<PlaylistResponseDto> playlists = playlistServicio.listarPorUsuario(idUsuario);
+            @PathVariable String nombreUsuario) {
+        List<PlaylistResponseDto> playlists = playlistServicio.listarPorUsuario(nombreUsuario);
         return ResponseEntity.ok(new RespuestaApi<>(true, "Playlists obtenidas exitosamente", playlists, HttpStatus.OK.value()));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<RespuestaApi<PlaylistDetalleResponseDto>> verDetalle(
-            @PathVariable Long id) {
+            @PathVariable String id) {
         PlaylistDetalleResponseDto detalle = playlistServicio.verDetalle(id);
+        if (detalle == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new RespuestaApi<>(false, "Playlist no encontrada", HttpStatus.NOT_FOUND.value()));
+        }
         return ResponseEntity.ok(new RespuestaApi<>(true, "Playlist obtenida exitosamente", detalle, HttpStatus.OK.value()));
     }
 
@@ -47,25 +55,39 @@ public class PlaylistControlador {
     public ResponseEntity<RespuestaApi<PlaylistResponseDto>> crear(
             @Valid @RequestBody PlaylistRequestDto request) {
         PlaylistResponseDto playlist = playlistServicio.crearPlaylist(request);
+        if (playlist == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new RespuestaApi<>(false, "Usuario no encontrado", HttpStatus.BAD_REQUEST.value()));
+        }
         return new ResponseEntity<>(new RespuestaApi<>(true, "Playlist creada exitosamente", playlist, HttpStatus.CREATED.value()), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<RespuestaApi<PlaylistResponseDto>> actualizar(
-            @PathVariable Long id, @Valid @RequestBody PlaylistRequestDto request) {
+            @PathVariable String id, @Valid @RequestBody PlaylistRequestDto request) {
         PlaylistResponseDto playlist = playlistServicio.actualizarPlaylist(id, request);
+        if (playlist == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new RespuestaApi<>(false, "Playlist no encontrada", HttpStatus.NOT_FOUND.value()));
+        }
         return ResponseEntity.ok(new RespuestaApi<>(true, "Playlist actualizada exitosamente", playlist, HttpStatus.OK.value()));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<RespuestaApi<Void>> eliminar(@PathVariable Long id) {
-        playlistServicio.eliminarPlaylist(id);
+    public ResponseEntity<RespuestaApi<Void>> eliminar(@PathVariable String id) {
+        boolean resultado = playlistServicio.eliminarPlaylist(id);
+        if (!resultado) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new RespuestaApi<>(false, "Playlist no encontrada", HttpStatus.NOT_FOUND.value()));
+        }
         return ResponseEntity.ok(new RespuestaApi<>(true, "Playlist eliminada exitosamente", HttpStatus.OK.value()));
     }
 
+    // Las canciones se agregan al array embebido dentro del documento playlist
+    // no se crea un registro en tabla intermedia como en JPA
     @PostMapping("/{idPlaylist}/canciones")
     public ResponseEntity<RespuestaApi<Void>> agregarCancion(
-            @PathVariable Long idPlaylist,
+            @PathVariable String idPlaylist,
             @Valid @RequestBody AgregarCancionPlaylistDto request) {
         boolean resultado = playlistServicio.agregarCancion(idPlaylist, request);
         if (!resultado) {
@@ -75,10 +97,11 @@ public class PlaylistControlador {
         return new ResponseEntity<>(new RespuestaApi<>(true, "Cancion agregada exitosamente", HttpStatus.CREATED.value()), HttpStatus.CREATED);
     }
 
+    // Las canciones se eliminan del array embebido dentro del documento playlist
     @DeleteMapping("/{idPlaylist}/canciones/{idCancion}")
     public ResponseEntity<RespuestaApi<Void>> eliminarCancion(
-            @PathVariable Long idPlaylist,
-            @PathVariable Long idCancion) {
+            @PathVariable String idPlaylist,
+            @PathVariable String idCancion) {
         boolean resultado = playlistServicio.eliminarCancion(idPlaylist, idCancion);
         if (!resultado) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)

@@ -1,23 +1,22 @@
 package com.musiczone.repositorio;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import com.musiczone.modelo.Cancion;
 
 import java.util.List;
 
-public interface CancionRepositorio extends JpaRepository<Cancion, Long> {
-	
-	//Método de busqueda por cancion con coincidencias 
-	//O sea, si escribo unas pocas letras ya el buscados da las similitudes
+// Se reemplaza JpaRepository por MongoRepository
+// El segundo parámetro cambia de Long a String por el ObjectId de MongoDB
+public interface CancionRepositorio extends MongoRepository<Cancion, String> {
+
+    // Spring Data MongoDB soporta este método derivado igual que JPA
+    // busca canciones cuyo título contenga el texto sin importar mayúsculas/minúsculas
     List<Cancion> findByTituloContainingIgnoreCase(String titulo);
-    
-    //Metodo de busqueda por artista, devuelve una lista con todas las canciones dl artista
-    @Query("""
-        SELECT c
-        FROM Cancion c
-        WHERE LOWER(c.artista.nombre) LIKE LOWER(CONCAT('%', :artista, '%'))
-        """)
-    List<Cancion> buscarPorArtista(@Param("artista") String artista);
+
+    // En JPA se usaba JPQL con LIKE y LOWER
+    // En MongoDB se usa una query con expresión regular para búsqueda parcial sin importar mayúsculas
+    // artista.nombre accede al campo nombre dentro del objeto artista embebido en el documento cancion
+    @Query("{ 'artista.nombre': { $regex: ?0, $options: 'i' } }")
+    List<Cancion> buscarPorArtista(String artista);
 }

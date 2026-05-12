@@ -4,11 +4,10 @@ import org.springframework.stereotype.Service;
 import com.musiczone.dto.CancionResponseDto;
 import com.musiczone.modelo.Cancion;
 import com.musiczone.repositorio.CancionRepositorio;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Transactional
+// Se elimina @Transactional porque MongoDB no usa transacciones relacionales
 @Service
 public class CancionServicio implements ICancionServicio {
 
@@ -17,16 +16,15 @@ public class CancionServicio implements ICancionServicio {
     public CancionServicio(CancionRepositorio cancionRepositorio) {
         this.cancionRepositorio = cancionRepositorio;
     }
-    
+
+    // El tipo del id cambia de Long a String por el ObjectId de MongoDB
     @Override
-    public CancionResponseDto buscarCancion(Long id) {
+    public CancionResponseDto buscarCancion(String id) {
         Cancion cancion = cancionRepositorio.findById(id).orElse(null);
-        if (cancion == null) {
-            return null;
-        }
+        if (cancion == null) return null;
         return mapearCancion(cancion);
     }
-    
+
     @Override
     public List<CancionResponseDto> listarTodas() {
         return cancionRepositorio.findAll()
@@ -42,7 +40,7 @@ public class CancionServicio implements ICancionServicio {
             .map(this::mapearCancion)
             .toList();
     }
-    
+
     @Override
     public List<CancionResponseDto> buscarPorArtista(String artista) {
         return cancionRepositorio.buscarPorArtista(artista)
@@ -51,6 +49,9 @@ public class CancionServicio implements ICancionServicio {
             .toList();
     }
 
+    // Método privado que convierte Cancion a CancionResponseDto
+    // Se accede con ?. a artista y album porque pueden ser null (canciones sin album o sin artista)
+    // Se agrega urlAudio para que el frontend pueda reproducir la cancion directamente
     private CancionResponseDto mapearCancion(Cancion cancion) {
         return new CancionResponseDto(
             cancion.getId(),
@@ -60,9 +61,8 @@ public class CancionServicio implements ICancionServicio {
             cancion.getDuracionSegundos(),
             cancion.getNumeroTrack(),
             cancion.getGenero(),
-            cancion.getYearLanzamiento()
+            cancion.getYearLanzamiento(),
+            cancion.getUrlAudio()
         );
     }
 }
-
-

@@ -12,6 +12,8 @@ import com.musiczone.dto.UsuarioRequestDto;
 import com.musiczone.dto.UsuarioResponseDto;
 import com.musiczone.servicio.UsuarioServicio;
 
+// Controlador de usuarios — solo maneja el registro
+// El login está en AuthControlador bajo /auth/login
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioControlador {
@@ -22,6 +24,8 @@ public class UsuarioControlador {
         this.usuarioServicio = usuarioServicio;
     }
 
+    // Retorna 409 Conflict si el nombre de usuario o correo ya están registrados
+    // La validación previa se hace en UsuarioServicio con existsByNombreUsuario y existsByCorreo
     @PostMapping
     public ResponseEntity<RespuestaApi<UsuarioResponseDto>> registrar(
             @Valid @RequestBody UsuarioRequestDto request) {

@@ -1,136 +1,75 @@
 package com.musiczone.modelo;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = Artista.TABLA_NAME)
+@Document(collection = "artistas")
 public class Artista {
-    public static final String TABLA_NAME = "artista";
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_artista")
-    private Long id;
+    private String id;
 
-    @Column(name = "nombre", nullable = false, length = 150)
+    @Field("nombre")
     private String nombre;
 
-    @Column(name = "genero", length = 80)
+    @Field("genero")
     private String genero;
 
-    @Column(name = "pais", length = 80)
+    @Field("pais")
     private String pais;
 
-    @Column(name = "bio", columnDefinition = "TEXT")
+    @Field("bio")
     private String bio;
 
-    @Column(name = "perfil_url", length = 500)
+    @Field("perfil_url")
     private String perfilUrl;
 
-    @OneToMany(mappedBy = "artista")
-    @JsonIgnoreProperties("artista")
     private List<Album> albumes = new ArrayList<>();
-
-    @OneToMany(mappedBy = "artista")
-    @JsonIgnoreProperties("artista")
     private List<Cancion> canciones = new ArrayList<>();
 
-	public Artista(Long id, String nombre, String genero, String pais, String bio, String perfilUrl,
-			List<Album> albumes, List<Cancion> canciones) {
-		super();
-		this.id = id;
-		this.nombre = nombre;
-		this.genero = genero;
-		this.pais = pais;
-		this.bio = bio;
-		this.perfilUrl = perfilUrl;
-		this.albumes = albumes;
-		this.canciones = canciones;
-	}
-	
-	
+    public Artista() {}
 
-	public Artista() {
-	}
+    public Artista(String id, String nombre, String genero, String pais, String bio, String perfilUrl,
+            List<Album> albumes, List<Cancion> canciones) {
+        this.id = id;
+        this.nombre = nombre;
+        this.genero = genero;
+        this.pais = pais;
+        this.bio = bio;
+        this.perfilUrl = perfilUrl;
+        this.albumes = albumes;
+        this.canciones = canciones;
+    }
 
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
-	public Long getId() {
-		return id;
-	}
+    public String getGenero() { return genero; }
+    public void setGenero(String genero) { this.genero = genero; }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public String getPais() { return pais; }
+    public void setPais(String pais) { this.pais = pais; }
 
-	public String getNombre() {
-		return nombre;
-	}
+    public String getBio() { return bio; }
+    public void setBio(String bio) { this.bio = bio; }
 
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
+    public String getPerfilUrl() { return perfilUrl; }
+    public void setPerfilUrl(String perfilUrl) { this.perfilUrl = perfilUrl; }
 
-	public String getGenero() {
-		return genero;
-	}
+    @JsonIgnore
+    public List<Album> getAlbumes() { return albumes; }
+    public void setAlbumes(List<Album> albumes) { this.albumes = albumes; }
 
-	public void setGenero(String genero) {
-		this.genero = genero;
-	}
-
-	public String getPais() {
-		return pais;
-	}
-
-	public void setPais(String pais) {
-		this.pais = pais;
-	}
-
-	public String getBio() {
-		return bio;
-	}
-
-	public void setBio(String bio) {
-		this.bio = bio;
-	}
-
-	public String getPerfilUrl() {
-		return perfilUrl;
-	}
-
-	public void setPerfilUrl(String perfilUrl) {
-		this.perfilUrl = perfilUrl;
-	}
-
-	public List<Album> getAlbumes() {
-		return albumes;
-	}
-
-	public void setAlbumes(List<Album> albumes) {
-		this.albumes = albumes;
-	}
-
-	public List<Cancion> getCanciones() {
-		return canciones;
-	}
-
-	public void setCanciones(List<Cancion> canciones) {
-		this.canciones = canciones;
-	}
-    
-    
-
-
+    @JsonIgnore
+    public List<Cancion> getCanciones() { return canciones; }
+    public void setCanciones(List<Cancion> canciones) { this.canciones = canciones; }
 }
-

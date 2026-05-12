@@ -1,131 +1,76 @@
 package com.musiczone.modelo;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-
-@Table(name = Playlist.TABLA_NAME)
+// En MongoDB no existe la tabla intermedia cancion_playlist
+// Las canciones de una playlist se guardan como array embebido dentro del documento
+// Esto elimina la necesidad de joins y hace las consultas más rápidas
+@Document(collection = "playlists")
 public class Playlist {
-    public static final String TABLA_NAME = "playlist";
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_playlist")
-    private Long id;
+    private String id;
 
-    @Column(name = "nombre", nullable = false, length = 150)
+    @Field("nombre")
     private String nombre;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_usuario", nullable = false)
-    @JsonIgnoreProperties("playlists")
-    private Usuario usuario;
+    // En JPA se usaba @ManyToOne con un objeto Usuario completo
+    // En MongoDB guardamos solo el nombre de usuario como referencia ligera
+    // evitando documentos anidados innecesariamente grandes
+    @Field("usuario")
+    private String usuario;
 
-    @Column(name = "descripcion", columnDefinition = "TEXT")
+    @Field("descripcion")
     private String descripcion;
 
-    @Column(name = "fecha_creacion", nullable = false, updatable = false)
+    @Field("fecha_creacion")
     private LocalDateTime fechaCreacion;
 
-    @Column(name = "fecha_actualizacion", nullable = false)
+    @Field("fecha_actualizacion")
     private LocalDateTime fechaActualizacion;
 
-    @OneToMany(mappedBy = "playlist")
-    @JsonIgnoreProperties({"playlist", "cancion"})
-    private List<CancionPlaylist> cancionesPlaylist = new ArrayList<>();
+    // Reemplaza la tabla intermedia cancion_playlist
+    // Cada elemento del array tiene: idCancion, titulo, artista, posicion, fechaAgregada
+    @Field("canciones")
+    private List<CancionPlaylist> canciones = new ArrayList<>();
 
-	public Playlist(Long id, String nombre, Usuario usuario, String descripcion, LocalDateTime fechaCreacion,
-			LocalDateTime fechaActualizacion, List<CancionPlaylist> cancionesPlaylist) {
-		super();
-		this.id = id;
-		this.nombre = nombre;
-		this.usuario = usuario;
-		this.descripcion = descripcion;
-		this.fechaCreacion = fechaCreacion;
-		this.fechaActualizacion = fechaActualizacion;
-		this.cancionesPlaylist = cancionesPlaylist;
-	}
+    public Playlist() {}
 
-	public Long getId() {
-		return id;
-	}
+    public Playlist(String id, String nombre, String usuario, String descripcion,
+            LocalDateTime fechaCreacion, LocalDateTime fechaActualizacion, List<CancionPlaylist> canciones) {
+        this.id = id;
+        this.nombre = nombre;
+        this.usuario = usuario;
+        this.descripcion = descripcion;
+        this.fechaCreacion = fechaCreacion;
+        this.fechaActualizacion = fechaActualizacion;
+        this.canciones = canciones;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
-	public String getNombre() {
-		return nombre;
-	}
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
+    public String getUsuario() { return usuario; }
+    public void setUsuario(String usuario) { this.usuario = usuario; }
 
-	public Usuario getUsuario() {
-		return usuario;
-	}
+    public String getDescripcion() { return descripcion; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
-	}
+    public LocalDateTime getFechaCreacion() { return fechaCreacion; }
+    public void setFechaCreacion(LocalDateTime fechaCreacion) { this.fechaCreacion = fechaCreacion; }
 
-	public String getDescripcion() {
-		return descripcion;
-	}
+    public LocalDateTime getFechaActualizacion() { return fechaActualizacion; }
+    public void setFechaActualizacion(LocalDateTime fechaActualizacion) { this.fechaActualizacion = fechaActualizacion; }
 
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
-
-	public LocalDateTime getFechaCreacion() {
-		return fechaCreacion;
-	}
-
-	public void setFechaCreacion(LocalDateTime fechaCreacion) {
-		this.fechaCreacion = fechaCreacion;
-	}
-
-	public LocalDateTime getFechaActualizacion() {
-		return fechaActualizacion;
-	}
-
-	public void setFechaActualizacion(LocalDateTime fechaActualizacion) {
-		this.fechaActualizacion = fechaActualizacion;
-	}
-
-	public List<CancionPlaylist> getCancionesPlaylist() {
-		return cancionesPlaylist;
-	}
-
-	public void setCancionesPlaylist(List<CancionPlaylist> cancionesPlaylist) {
-		this.cancionesPlaylist = cancionesPlaylist;
-	}
-
-	public static String getTablaName() {
-		return TABLA_NAME;
-	}
-
-	public Playlist() {
-		
-	}
-    
-    
-
-    
-} 
-
+    public List<CancionPlaylist> getCanciones() { return canciones; }
+    public void setCanciones(List<CancionPlaylist> canciones) { this.canciones = canciones; }
+}

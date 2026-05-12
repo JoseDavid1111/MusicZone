@@ -1,103 +1,50 @@
 package com.musiczone.modelo;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.Table;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
-
-@Entity
-
-@Table(name = CancionPlaylist.TABLA_NAME)
+// En MongoDB ya no es necesaria como entidad separada 
+// la relación canción-playlist se maneja como array dentro de Playlist
+// Se convierte en una clase simple que represente una canción dentro de una playlist
 public class CancionPlaylist {
-    public static final String TABLA_NAME = "cancion_playlist";
 
-    @EmbeddedId
-    private CancionPlaylistId id;
+    @Field("id_cancion")
+    private String idCancion;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("playlistId")
-    @JoinColumn(name = "id_playlist")
-    @JsonIgnoreProperties({"usuario", "cancionesPlaylist"})
-    private Playlist playlist;
+    @Field("titulo")
+    private String titulo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("cancionId")
-    @JoinColumn(name = "id_cancion")
-    @JsonIgnoreProperties({"artista", "album", "cancionesPlaylist"})
-    private Cancion cancion;
+    @Field("artista")
+    private String artista;
 
-    @Column(name = "posicion")
+    @Field("posicion")
     private Integer posicion;
 
-    @Column(name = "fecha_agregada", nullable = false, updatable = false)
+    @Field("fecha_agregada")
     private LocalDateTime fechaAgregada;
 
-	public CancionPlaylist(CancionPlaylistId id, Playlist playlist, Cancion cancion, Integer posicion,
-			LocalDateTime fechaAgregada) {
-		super();
-		this.id = id;
-		this.playlist = playlist;
-		this.cancion = cancion;
-		this.posicion = posicion;
-		this.fechaAgregada = fechaAgregada;
-	}
+    public CancionPlaylist() {}
 
-	public CancionPlaylistId getId() {
-		return id;
-	}
+    public CancionPlaylist(String idCancion, String titulo, String artista, Integer posicion, LocalDateTime fechaAgregada) {
+        this.idCancion = idCancion;
+        this.titulo = titulo;
+        this.artista = artista;
+        this.posicion = posicion;
+        this.fechaAgregada = fechaAgregada;
+    }
 
-	public void setId(CancionPlaylistId id) {
-		this.id = id;
-	}
+    public String getIdCancion() { return idCancion; }
+    public void setIdCancion(String idCancion) { this.idCancion = idCancion; }
 
-	public Playlist getPlaylist() {
-		return playlist;
-	}
+    public String getTitulo() { return titulo; }
+    public void setTitulo(String titulo) { this.titulo = titulo; }
 
-	public void setPlaylist(Playlist playlist) {
-		this.playlist = playlist;
-	}
+    public String getArtista() { return artista; }
+    public void setArtista(String artista) { this.artista = artista; }
 
-	public Cancion getCancion() {
-		return cancion;
-	}
+    public Integer getPosicion() { return posicion; }
+    public void setPosicion(Integer posicion) { this.posicion = posicion; }
 
-	public void setCancion(Cancion cancion) {
-		this.cancion = cancion;
-	}
-
-	public Integer getPosicion() {
-		return posicion;
-	}
-
-	public void setPosicion(Integer posicion) {
-		this.posicion = posicion;
-	}
-
-	public LocalDateTime getFechaAgregada() {
-		return fechaAgregada;
-	}
-
-	public void setFechaAgregada(LocalDateTime fechaAgregada) {
-		this.fechaAgregada = fechaAgregada;
-	}
-
-	public static String getTablaName() {
-		return TABLA_NAME;
-	}
-
-	public CancionPlaylist() {
-	}
-    
-    
-    
+    public LocalDateTime getFechaAgregada() { return fechaAgregada; }
+    public void setFechaAgregada(LocalDateTime fechaAgregada) { this.fechaAgregada = fechaAgregada; }
 }
-
-
