@@ -4,7 +4,7 @@ package com.musiczone.dto;
 // Evita exponer directamente el modelo y permite controlar qué campos se envían
 public class ArtistaResponseDto {
 
-    // Cambia de Long a String por el ObjectId de MongoDB
+    // Identificador del artista en MongoDB.
     private String id;
     private String nombre;
     private String genero;

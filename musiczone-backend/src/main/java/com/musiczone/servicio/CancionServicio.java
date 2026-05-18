@@ -7,7 +7,7 @@ import com.musiczone.repositorio.CancionRepositorio;
 
 import java.util.List;
 
-// Se elimina @Transactional porque MongoDB no usa transacciones relacionales
+// Servicio de consulta para el catálogo de canciones.
 @Service
 public class CancionServicio implements ICancionServicio {
 
@@ -17,7 +17,7 @@ public class CancionServicio implements ICancionServicio {
         this.cancionRepositorio = cancionRepositorio;
     }
 
-    // El tipo del id cambia de Long a String por el ObjectId de MongoDB
+    // Busca una canción por su identificador.
     @Override
     public CancionResponseDto buscarCancion(String id) {
         Cancion cancion = cancionRepositorio.findById(id).orElse(null);
@@ -49,9 +49,7 @@ public class CancionServicio implements ICancionServicio {
             .toList();
     }
 
-    // Método privado que convierte Cancion a CancionResponseDto
-    // Se accede con ?. a artista y album porque pueden ser null (canciones sin album o sin artista)
-    // Se agrega urlAudio para que el frontend pueda reproducir la cancion directamente
+    // Convierte el documento de canción al DTO usado por la API.
     private CancionResponseDto mapearCancion(Cancion cancion) {
         return new CancionResponseDto(
             cancion.getId(),

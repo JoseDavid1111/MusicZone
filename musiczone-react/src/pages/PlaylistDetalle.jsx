@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import { playlistService, cancionService } from '../services/api'
 import { Spinner, EstadoVacio, Modal, BtnSecundario } from '../components/ui'
+import ReproductorAudio from '../components/ReproductorAudio'
 
 export default function PlaylistDetalle() {
   const { id } = useParams()
@@ -16,6 +17,7 @@ export default function PlaylistDetalle() {
   const [modalVisible, setModalVisible] = useState(false)
   const [todasCanciones, setTodasCanciones] = useState([])
   const [busqueda, setBusqueda] = useState('')
+  const [cancionActiva, setCancionActiva] = useState(null)
 
   const cargar = () => {
     setCargando(true)
@@ -47,6 +49,17 @@ export default function PlaylistDetalle() {
       exito('Canción quitada')
       cargar()
     } catch (e) { error(e.message) }
+  }
+
+  const reproducirAleatoria = () => {
+    const reproducibles = (playlist.canciones || []).filter(c => c.urlAudio)
+    if (reproducibles.length === 0) return
+
+    const opciones = reproducibles.length > 1 && cancionActiva
+      ? reproducibles.filter(c => c.idCancion !== cancionActiva.idCancion)
+      : reproducibles
+
+    setCancionActiva(opciones[Math.floor(Math.random() * opciones.length)])
   }
 
   const cancionesFiltradas = todasCanciones.filter(c =>
@@ -85,17 +98,35 @@ export default function PlaylistDetalle() {
             <p style={{ color: 'var(--texto-2)', marginTop: 6 }}>{playlist.descripcion}</p>
           )}
         </div>
-        <button
-          onClick={abrirModal}
-          style={{
-            background: 'var(--acento)', color: '#000',
-            border: 'none', borderRadius: 'var(--radio)',
-            padding: '10px 20px', fontWeight: 700,
-            fontSize: 13, cursor: 'pointer',
-          }}
-        >
-          + Agregar canción
-        </button>
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+          <button
+            onClick={reproducirAleatoria}
+            disabled={!(playlist.canciones || []).some(c => c.urlAudio)}
+            style={{
+              background: (playlist.canciones || []).some(c => c.urlAudio) ? 'var(--acento-dim)' : 'var(--bg-glass)',
+              color: (playlist.canciones || []).some(c => c.urlAudio) ? 'var(--acento)' : 'var(--texto-3)',
+              border: (playlist.canciones || []).some(c => c.urlAudio) ? '1px solid var(--acento)' : '1px solid var(--borde)',
+              borderRadius: 'var(--radio)',
+              padding: '10px 18px',
+              fontWeight: 700,
+              fontSize: 13,
+              cursor: (playlist.canciones || []).some(c => c.urlAudio) ? 'pointer' : 'not-allowed',
+            }}
+          >
+            Aleatoria
+          </button>
+          <button
+            onClick={abrirModal}
+            style={{
+              background: 'var(--acento)', color: '#06110b',
+              border: 'none', borderRadius: 'var(--radio)',
+              padding: '10px 20px', fontWeight: 700,
+              fontSize: 13, cursor: 'pointer',
+            }}
+          >
+            + Agregar canción
+          </button>
+        </div>
       </div>
 
       {/* Lista de canciones */}
@@ -105,7 +136,10 @@ export default function PlaylistDetalle() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {playlist.canciones.map((c, i) => (
               <div key={c.idCancion} style={{
-                display: 'flex', alignItems: 'center', gap: 16,
+                display: 'flex',
+                flexWrap: 'wrap',
+                alignItems: 'center',
+                gap: 16,
                 background: 'var(--bg-card)',
                 border: '1px solid var(--borde)',
                 borderRadius: 'var(--radio)',
@@ -118,11 +152,27 @@ export default function PlaylistDetalle() {
                 <span style={{ fontSize: 13, color: 'var(--texto-3)', minWidth: 24, textAlign: 'right', fontWeight: 600 }}>
                   {c.posicion || i + 1}
                 </span>
-                <div style={{ flex: 1 }}>
+                <div style={{ flex: '1 1 180px', minWidth: 0 }}>
                   <div style={{ fontWeight: 600, fontSize: 14 }}>{c.titulo}</div>
                   <div style={{ fontSize: 12, color: 'var(--texto-2)', marginTop: 2 }}>{c.artista}</div>
                 </div>
-                {c.album && <span style={{ fontSize: 12, color: 'var(--texto-3)' }}>{c.album}</span>}
+                <button
+                  onClick={() => setCancionActiva(c)}
+                  disabled={!c.urlAudio}
+                  style={{
+                    flex: '0 0 auto',
+                    padding: '8px 14px',
+                    background: c.urlAudio ? 'var(--acento)' : 'var(--bg-glass)',
+                    color: c.urlAudio ? '#000' : 'var(--texto-3)',
+                    border: c.urlAudio ? '1px solid var(--acento)' : '1px solid var(--borde)',
+                    borderRadius: 8,
+                    cursor: c.urlAudio ? 'pointer' : 'not-allowed',
+                    fontSize: 12,
+                    fontWeight: 700,
+                  }}
+                >
+                  Reproducir
+                </button>
                 <button
                   onClick={() => quitar(c.idCancion)}
                   title="Quitar de playlist"
@@ -188,6 +238,7 @@ export default function PlaylistDetalle() {
           Cerrar
         </BtnSecundario>
       </Modal>
+      <ReproductorAudio cancion={cancionActiva} onClose={() => setCancionActiva(null)} />
     </div>
   )
 }

@@ -1,63 +1,91 @@
 # MusicZone
 
------------------------------------
-## 👤 Participantes
-* Angela Lozano Pulido
-* Gabriel Alfonso Vera
-* Jose David Meneses 
+MusicZone es una aplicación web full-stack para explorar canciones, buscar artistas, iniciar sesión y gestionar playlists personales. El proyecto usa una API REST con Spring Boot, un frontend en React con Vite y una base de datos MongoDB Atlas.
 
-MusicZone es una aplicación web full-stack diseñada para simular la funcionalidad principal de una plataforma de streaming de música digital. Inspirada en las interfaces visuales de servicios como Spotify, permite a los usuarios explorar un amplio catálogo de canciones, gestionar listas de reproducción personalizadas y buscar a sus artistas favoritos, todo ello a través de una arquitectura estructurada y desacoplada.
+## Participantes
 
-El proyecto se centra en la gestión musical, proporcionando una solución robusta para organizar datos musicales. Desarrollada con una arquitectura de tres capas, aprovecha una API REST de Spring Boot y un frontend dinámico para ofrecer una experiencia de usuario fluida.
+- Angela Lozano Pulido
+- Gabriel Alfonso Vera
+- Jose David Meneses
 
-Características principales:
+## Características
 
-* Autenticación segura: Sistema de inicio de sesión con validación de credenciales en una base de datos no relacional.
-* Catálogo inspirado en Spotify: Explora canciones con énfasis en información y en su guardado.
-* Búsqueda avanzada: Encuentra canciones fácilmente por título o artista.
-* Gestión de listas de reproducción (CRUD):
-* Crea, renombra, busca y elimina listas de reproducción personalizadas.
-   * Agrega o elimina canciones dinámicamente de cualquier lista.
-* Interfaz de usuario adaptable: Una interfaz limpia desarrollada con tecnologías web estándar.
------------------------------------
-## 🛠️ Tech StackBackend
-* Framework: Spring Boot (Java), Reacr Vite
-* Languages: React, Java, JavaScript
-  
-* Architecture: REST API (Controller-Service-Repository pattern)
-  
-* Security: Se proyeca utiliar tokens con jwt para asegurar las credenciales y evitar exponerlas en los viajes de los json, principalemnte en la parte de login
-  
-Database: Se contempla usar 2 ramas:
-  * Supabase: Se guardaran los archivos MP3 de las canciones
-  * MongoDB | Atlas: Se guardará la base de datos no relacional con las siguientes colecciones
-  * mongodb+srv://angelalozanouis2022:<db_password>@cluster0.aublw.mongodb.net/?appName=Cluster0
-  * Replace <db_password> with the password for the angelalozanouis2022 database user. 
-    <img width="539" height="420" alt="image" src="https://github.com/user-attachments/assets/5e56cb09-3290-4061-95bb-4bd7ed9778c5" />
+- Registro e inicio de sesión con JWT.
+- Catálogo de canciones con búsqueda por título o artista.
+- Reproducción de canciones mediante URLs de audio almacenadas en MongoDB.
+- Gestión de playlists: crear, editar, eliminar, agregar canciones y quitarlas.
+- Reproducción desde playlists, incluyendo opción de canción aleatoria.
+- Interfaz web en React con layout protegido para usuarios autenticados.
+- Documentación de endpoints con Swagger.
 
-* Flujo de funcionamiento: Teniendo en cuenta los nuevos cambios, se proyecta:
-  <img width="571" height="364" alt="image" src="https://github.com/user-attachments/assets/9de34c16-2fd8-4cbf-be3e-75575255ca3c" />
+## Tecnologías
 
+- Backend: Java 17, Spring Boot, Spring Security, JWT, Spring Data MongoDB.
+- Frontend: React, Vite, React Router.
+- Base de datos: MongoDB Atlas.
+- Almacenamiento de audios: Supabase Storage mediante URLs públicas o válidas para reproducción.
 
-----------------------------------------------------------
-## 📂 Project Structure
+## Estructura del proyecto
 
 ```text
 MusicZone/
-├── musiczone-backend/           # Spring Boot Application
-│   └── src/           # API Logic & Database Config
-├── musiczone-react/          # Web Interface
-│   ├── node_modules/           # styling
-│   ├── src/            # API consumption & DOM logic
-│   └── index.html     # Main entry point
-|   └── package-lock.json
-|   └── package.json
-|   └── vite.confing.js  
+├── musiczone-backend/      # API REST en Spring Boot
+│   ├── src/main/java/      # Controladores, servicios, modelos y repositorios
+│   └── src/main/resources/ # Configuración de la aplicación
+├── musiczone-react/        # Frontend principal en React + Vite
+│   ├── src/                # Componentes, páginas, contexto y servicios
+│   ├── package.json
+│   └── vite.config.js
+├── musiczone-frontend/     # Versión estática anterior; no se usa para correr la app actual
 └── README.md
+```
 
------------------------------------------------------------------
-⚙️ Installation & Setup
+## Requisitos
 
-  1. Clone the repository:
-     git clone https://github.com/JoseDavid1111/MusicZone.git
-     cd MusicZone
+- Java 17 o superior.
+- Node.js y npm.
+- Acceso a la base de datos MongoDB configurada para el proyecto.
+
+## Ejecución
+
+Abrir una terminal para el backend:
+
+```powershell
+cd "...\musiczone-backend"
+.\mvnw.cmd spring-boot:run
+```
+
+El backend queda disponible en:
+
+```text
+http://localhost:8081
+```
+
+Swagger:
+
+```text
+http://localhost:8081/swagger-ui.html
+```
+
+Abrir otra terminal para el frontend:
+
+```powershell
+cd "...\musiczone-react"
+npm install
+npm run dev
+```
+
+El frontend queda disponible en:
+
+```text
+http://localhost:5173
+```
+
+## Configuración
+
+La conexión a MongoDB se configura en:
+
+```text
+musiczone-backend/src/main/resources/application.properties
+```
+

@@ -20,7 +20,7 @@ import com.musiczone.servicio.PlaylistServicio;
 import java.util.List;
 
 // Controlador de playlists — maneja el CRUD completo y la gestión de canciones
-// Todos los ids cambian de Long a String por el ObjectId de MongoDB
+// Los identificadores se manejan como String porque provienen de MongoDB.
 @RestController
 @RequestMapping("/playlists")
 public class PlaylistControlador {
@@ -31,8 +31,7 @@ public class PlaylistControlador {
         this.playlistServicio = playlistServicio;
     }
 
-    // En JPA se buscaba por idUsuario (Long)
-    // En MongoDB se busca por nombreUsuario (String)
+    // Busca las playlists asociadas a un nombre de usuario.
     @GetMapping("/usuario/{nombreUsuario}")
     public ResponseEntity<RespuestaApi<List<PlaylistResponseDto>>> listarPorUsuario(
             @PathVariable String nombreUsuario) {
@@ -83,8 +82,7 @@ public class PlaylistControlador {
         return ResponseEntity.ok(new RespuestaApi<>(true, "Playlist eliminada exitosamente", HttpStatus.OK.value()));
     }
 
-    // Las canciones se agregan al array embebido dentro del documento playlist
-    // no se crea un registro en tabla intermedia como en JPA
+    // Agrega una canción al arreglo embebido de la playlist.
     @PostMapping("/{idPlaylist}/canciones")
     public ResponseEntity<RespuestaApi<Void>> agregarCancion(
             @PathVariable String idPlaylist,
@@ -97,7 +95,7 @@ public class PlaylistControlador {
         return new ResponseEntity<>(new RespuestaApi<>(true, "Cancion agregada exitosamente", HttpStatus.CREATED.value()), HttpStatus.CREATED);
     }
 
-    // Las canciones se eliminan del array embebido dentro del documento playlist
+    // Elimina una canción del arreglo embebido de la playlist.
     @DeleteMapping("/{idPlaylist}/canciones/{idCancion}")
     public ResponseEntity<RespuestaApi<Void>> eliminarCancion(
             @PathVariable String idPlaylist,

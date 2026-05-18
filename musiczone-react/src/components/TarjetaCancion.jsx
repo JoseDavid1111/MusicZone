@@ -3,7 +3,7 @@ import { playlistService } from '../services/api'
 import { useToast } from '../context/ToastContext'
 import { Modal, BtnSecundario, ChipGenero } from './ui'
 
-export default function TarjetaCancion({ cancion, playlists = [] }) {
+export default function TarjetaCancion({ cancion, playlists = [], onReproducir }) {
   const [modalVisible, setModalVisible] = useState(false)
   const { exito, error } = useToast()
 
@@ -54,6 +54,25 @@ export default function TarjetaCancion({ cancion, playlists = [] }) {
           🎤 {cancion.artista || 'Artista desconocido'}
         </div>
         {cancion.genero && <ChipGenero texto={cancion.genero} />}
+
+        <button
+          onClick={() => onReproducir?.(cancion)}
+          disabled={!cancion.urlAudio}
+          style={{
+            marginTop: 8,
+            padding: '9px',
+            background: cancion.urlAudio ? 'var(--acento)' : 'var(--bg-glass)',
+            color: cancion.urlAudio ? '#000' : 'var(--texto-3)',
+            border: cancion.urlAudio ? '1px solid var(--acento)' : '1px solid var(--borde)',
+            borderRadius: 8,
+            cursor: cancion.urlAudio ? 'pointer' : 'not-allowed',
+            fontSize: 12,
+            fontWeight: 700,
+            transition: 'var(--transition)',
+          }}
+        >
+          Reproducir
+        </button>
 
         <button
           onClick={() => setModalVisible(true)}

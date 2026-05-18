@@ -3,13 +3,12 @@ package com.musiczone.servicio;
 import java.util.List;
 import com.musiczone.dto.CancionResponseDto;
 
-// Se mantiene la misma estructura de interface + implementación
-// Solo cambia el tipo del id de Long a String por el ObjectId de MongoDB
+// Contrato de operaciones de consulta para canciones.
 public interface ICancionServicio {
 
     List<CancionResponseDto> listarTodas();
 
-    // El tipo del id cambia de Long a String por el ObjectId de MongoDB
+    // Busca una canción por su identificador.
     CancionResponseDto buscarCancion(String id);
 
     List<CancionResponseDto> buscarPorArtista(String artista);

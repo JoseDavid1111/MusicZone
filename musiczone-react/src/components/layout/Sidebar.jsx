@@ -11,11 +11,11 @@ export default function Sidebar() {
 
   useEffect(() => {
     if (usuario) {
-      playlistService.listarPorUsuario(usuario.id)
+      playlistService.listarPorUsuario(usuario.nombreUsuario)
         .then(r => setPlaylists(r.datos || []))
         .catch(() => {})
     }
-  }, [usuario, location.pathname])
+  }, [usuario?.nombreUsuario, location.pathname])
 
   const navItems = [
     { path: '/app',        icono: '🏠', label: 'Inicio' },

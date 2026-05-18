@@ -8,9 +8,14 @@ export default function Header({ onBuscar }) {
   const [query, setQuery] = useState('')
 
   const handleBuscar = (e) => {
-    const v = e.target.value
-    setQuery(v)
-    if (onBuscar) onBuscar(v)
+    setQuery(e.target.value)
+  }
+
+  const enviarBusqueda = (e) => {
+    e.preventDefault()
+    const texto = query.trim()
+    if (onBuscar) onBuscar(texto)
+    navigate(texto ? `/canciones?buscar=${encodeURIComponent(texto)}` : '/canciones')
   }
 
   const handleLogout = () => {
@@ -42,7 +47,7 @@ export default function Header({ onBuscar }) {
       </div>
 
       {/* Buscador */}
-      <div style={{
+      <form onSubmit={enviarBusqueda} style={{
         flex: 1, maxWidth: 480,
         display: 'flex', alignItems: 'center',
         background: 'var(--bg-card)',
@@ -61,7 +66,7 @@ export default function Header({ onBuscar }) {
             padding: '10px 0',
           }}
         />
-      </div>
+      </form>
 
       {/* Usuario */}
       <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 12 }}>

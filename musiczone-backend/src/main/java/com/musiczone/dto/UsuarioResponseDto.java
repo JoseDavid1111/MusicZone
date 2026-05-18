@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 // El password nunca se incluye aquí por seguridad
 public class UsuarioResponseDto {
 
-    // Cambia de Long a String por el ObjectId de MongoDB
+    // Identificador del usuario en MongoDB.
     private String id;
     private String nombreUsuario;
     private String correo;

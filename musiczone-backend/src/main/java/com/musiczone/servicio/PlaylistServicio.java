@@ -15,9 +15,7 @@ import com.musiczone.repositorio.CancionRepositorio;
 import com.musiczone.repositorio.PlaylistRepositorio;
 import com.musiczone.repositorio.UsuarioRepositorio;
 
-// Se elimina @Transactional porque MongoDB no usa transacciones relacionales
-// Se elimina CancionPlaylistRepositorio porque en MongoDB las canciones
-// son un array embebido dentro del documento Playlist, no una colección separada
+// Servicio encargado de crear playlists y administrar sus canciones embebidas.
 @Service
 public class PlaylistServicio implements IPlaylistServicio {
 
@@ -35,8 +33,7 @@ public class PlaylistServicio implements IPlaylistServicio {
 
     @Override
     public PlaylistResponseDto crearPlaylist(PlaylistRequestDto dto) {
-        // En MongoDB se busca el usuario por nombreUsuario en vez de por id
-        // porque Playlist guarda el nombre de usuario como referencia ligera
+        // La playlist guarda el nombre de usuario como referencia ligera.
         var usuario = usuarioRepositorio.findByNombreUsuario(dto.getNombreUsuario()).orElse(null);
         if (usuario == null) return null;
 
@@ -58,8 +55,7 @@ public class PlaylistServicio implements IPlaylistServicio {
 
         playlist.setNombre(dto.getNombre());
         playlist.setDescripcion(dto.getDescripcion());
-        // Se actualiza la fecha de modificación manualmente
-        // en JPA esto lo hacía el trigger de PostgreSQL
+        // Se actualiza la fecha de modificación antes de guardar los cambios.
         playlist.setFechaActualizacion(LocalDateTime.now());
 
         Playlist actualizada = playlistRepositorio.save(playlist);
@@ -75,8 +71,7 @@ public class PlaylistServicio implements IPlaylistServicio {
 
     @Override
     public List<PlaylistResponseDto> listarPorUsuario(String nombreUsuario) {
-        // En JPA se buscaba por idUsuario (Long)
-        // En MongoDB se busca directamente por el nombre de usuario (String)
+        // Las playlists se consultan por el nombre de usuario asociado.
         return playlistRepositorio.findByUsuario(nombreUsuario)
             .stream()
             .map(this::mapearPlaylist)
@@ -88,8 +83,7 @@ public class PlaylistServicio implements IPlaylistServicio {
         Playlist playlist = playlistRepositorio.findById(idPlaylist).orElse(null);
         if (playlist == null) return null;
 
-        // En JPA se consultaba CancionPlaylistRepositorio por separado
-        // En MongoDB las canciones ya vienen embebidas en el documento playlist
+        // Las canciones ya vienen embebidas en el documento de la playlist.
         List<CancionPlaylistDto> canciones = playlist.getCanciones()
             .stream()
             .sorted((a, b) -> Integer.compare(
@@ -117,8 +111,7 @@ public class PlaylistServicio implements IPlaylistServicio {
         Cancion cancion = cancionRepositorio.findById(dto.getIdCancion()).orElse(null);
         if (cancion == null) return false;
 
-        // En JPA se verificaba con CancionPlaylistId si ya existía la relación
-        // En MongoDB se verifica si el idCancion ya está en el array de canciones
+        // Evita agregar la misma canción dos veces a la playlist.
         boolean yaExiste = playlist.getCanciones().stream()
             .anyMatch(c -> c.getIdCancion().equals(dto.getIdCancion()));
         if (yaExiste) return false;
@@ -128,6 +121,7 @@ public class PlaylistServicio implements IPlaylistServicio {
         cp.setTitulo(cancion.getTitulo());
         cp.setArtista(cancion.getArtista() != null ? cancion.getArtista().getNombre() : null);
         cp.setPosicion(dto.getPosicion());
+        cp.setUrlAudio(cancion.getUrlAudio());
         cp.setFechaAgregada(LocalDateTime.now());
 
         playlist.getCanciones().add(cp);
@@ -140,8 +134,7 @@ public class PlaylistServicio implements IPlaylistServicio {
         Playlist playlist = playlistRepositorio.findById(idPlaylist).orElse(null);
         if (playlist == null) return false;
 
-        // En JPA se eliminaba el registro de la tabla cancion_playlist por su id compuesto
-        // En MongoDB se remueve el elemento del array que tenga el idCancion indicado
+        // Remueve del arreglo la canción con el id indicado.
         boolean removido = playlist.getCanciones()
             .removeIf(c -> c.getIdCancion().equals(idCancion));
         if (!removido) return false;
@@ -162,11 +155,19 @@ public class PlaylistServicio implements IPlaylistServicio {
     }
 
     private CancionPlaylistDto mapearCancionPlaylist(CancionPlaylist cp) {
+        String urlAudio = cp.getUrlAudio();
+        if (urlAudio == null || urlAudio.isBlank()) {
+            urlAudio = cancionRepositorio.findById(cp.getIdCancion())
+                .map(Cancion::getUrlAudio)
+                .orElse(null);
+        }
+
         return new CancionPlaylistDto(
             cp.getIdCancion(),
             cp.getTitulo(),
             cp.getArtista(),
-            cp.getPosicion()
+            cp.getPosicion(),
+            urlAudio
         );
     }
 }

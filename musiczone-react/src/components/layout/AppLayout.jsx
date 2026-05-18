@@ -10,7 +10,8 @@ export default function AppLayout() {
         <Sidebar />
         <main style={{
           marginLeft: 'var(--sidebar-w)',
-          flex: 1, padding: 32,
+          flex: 1,
+          padding: '32px 32px 112px',
           minHeight: 'calc(100vh - var(--header-h))',
         }}>
           <Outlet />

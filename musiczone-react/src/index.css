@@ -3,30 +3,30 @@
    ═══════════════════════════════════════════ */
 
 :root {
-  --bg-base:       #080810;
-  --bg-card:       #10101a;
-  --bg-card-hover: #18182a;
-  --bg-sidebar:    #0c0c16;
-  --bg-glass:      rgba(255,255,255,0.04);
+  --bg-base:       #090b10;
+  --bg-card:       #121720;
+  --bg-card-hover: #18212d;
+  --bg-sidebar:    #0b0f16;
+  --bg-glass:      rgba(255,255,255,0.055);
 
-  --acento:        #c8ff00;
-  --acento-hover:  #d9ff33;
-  --acento-dim:    rgba(200,255,0,0.12);
-  --acento-glow:   rgba(200,255,0,0.25);
+  --acento:        #35e07b;
+  --acento-hover:  #66ee9d;
+  --acento-dim:    rgba(53,224,123,0.14);
+  --acento-glow:   rgba(53,224,123,0.28);
 
   --rojo:          #ff4444;
   --rojo-dim:      rgba(255,68,68,0.12);
 
-  --texto-1:       #f2f2f2;
-  --texto-2:       #8888aa;
-  --texto-3:       #44445a;
+  --texto-1:       #f4f7f5;
+  --texto-2:       #9aa6a0;
+  --texto-3:       #5b6862;
 
-  --borde:         rgba(255,255,255,0.06);
-  --borde-fuerte:  rgba(255,255,255,0.12);
+  --borde:         rgba(255,255,255,0.075);
+  --borde-fuerte:  rgba(255,255,255,0.15);
 
   --radio:         10px;
   --radio-lg:      18px;
-  --sombra:        0 12px 40px rgba(0,0,0,0.6);
+  --sombra:        0 18px 48px rgba(0,0,0,0.45);
 
   --font-display:  'Bebas Neue', sans-serif;
   --font-body:     'DM Sans', sans-serif;
@@ -42,7 +42,9 @@
 html { scroll-behavior: smooth; }
 
 body {
-  background: var(--bg-base);
+  background:
+    linear-gradient(180deg, rgba(18,25,34,0.92), var(--bg-base) 340px),
+    var(--bg-base);
   color: var(--texto-1);
   font-family: var(--font-body);
   font-size: 14px;
@@ -54,6 +56,12 @@ body {
 button { font-family: var(--font-body); cursor: pointer; }
 input  { font-family: var(--font-body); }
 a      { text-decoration: none; color: inherit; }
+
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--acento);
+  outline-offset: 2px;
+}
 
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }

@@ -6,8 +6,7 @@ import com.musiczone.dto.ArtistaResponseDto;
 import com.musiczone.modelo.Artista;
 import com.musiczone.repositorio.ArtistaRepositorio;
 
-// Se elimina @Transactional porque MongoDB no usa transacciones relacionales
-// Spring Data MongoDB maneja las operaciones directamente sin necesidad de esta anotación
+// Servicio de consulta para artistas.
 @Service
 public class ArtistaServicio implements IArtistaServicio {
 
@@ -25,7 +24,7 @@ public class ArtistaServicio implements IArtistaServicio {
             .toList();
     }
 
-    // El tipo del id cambia de Long a String por el ObjectId de MongoDB
+    // Busca un artista por su identificador.
     @Override
     public ArtistaResponseDto buscarArtista(String id) {
         Artista artista = artistaRepositorio.findById(id).orElse(null);
@@ -41,8 +40,7 @@ public class ArtistaServicio implements IArtistaServicio {
             .toList();
     }
 
-    // Método privado que convierte un objeto Artista a ArtistaResponseDto
-    // evita exponer directamente el modelo en las respuestas de la API
+    // Convierte el documento de artista al DTO usado por la API.
     private ArtistaResponseDto mapearArtista(Artista artista) {
         return new ArtistaResponseDto(
             artista.getId(),

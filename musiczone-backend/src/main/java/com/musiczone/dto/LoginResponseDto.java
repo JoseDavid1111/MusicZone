@@ -1,8 +1,7 @@
 package com.musiczone.dto;
 
-// DTO para la respuesta del login
-// Se agrega el campo token que contiene el JWT generado
-// El frontend debe guardar este token y enviarlo en cada petición protegida
+// DTO para la respuesta del login.
+// Incluye el token JWT usado por el frontend en las rutas protegidas.
 public class LoginResponseDto {
 
     private String id;

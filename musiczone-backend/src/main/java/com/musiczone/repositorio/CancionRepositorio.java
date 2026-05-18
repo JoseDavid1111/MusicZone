@@ -6,16 +6,13 @@ import com.musiczone.modelo.Cancion;
 
 import java.util.List;
 
-// Se reemplaza JpaRepository por MongoRepository
-// El segundo parámetro cambia de Long a String por el ObjectId de MongoDB
+// Repositorio de canciones en MongoDB.
 public interface CancionRepositorio extends MongoRepository<Cancion, String> {
 
-    // Spring Data MongoDB soporta este método derivado igual que JPA
-    // busca canciones cuyo título contenga el texto sin importar mayúsculas/minúsculas
+    // Busca canciones cuyo título contenga el texto sin importar mayúsculas/minúsculas.
     List<Cancion> findByTituloContainingIgnoreCase(String titulo);
 
-    // En JPA se usaba JPQL con LIKE y LOWER
-    // En MongoDB se usa una query con expresión regular para búsqueda parcial sin importar mayúsculas
+    // Usa una expresión regular para buscar por nombre de artista.
     // artista.nombre accede al campo nombre dentro del objeto artista embebido en el documento cancion
     @Query("{ 'artista.nombre': { $regex: ?0, $options: 'i' } }")
     List<Cancion> buscarPorArtista(String artista);

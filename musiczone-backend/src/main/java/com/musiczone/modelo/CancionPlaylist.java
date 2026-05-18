@@ -3,9 +3,7 @@ package com.musiczone.modelo;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
-// En MongoDB ya no es necesaria como entidad separada 
-// la relación canción-playlist se maneja como array dentro de Playlist
-// Se convierte en una clase simple que represente una canción dentro de una playlist
+// Representa una canción guardada dentro del arreglo de canciones de una playlist.
 public class CancionPlaylist {
 
     @Field("id_cancion")
@@ -20,16 +18,24 @@ public class CancionPlaylist {
     @Field("posicion")
     private Integer posicion;
 
+    @Field("url_audio")
+    private String urlAudio;
+
     @Field("fecha_agregada")
     private LocalDateTime fechaAgregada;
 
     public CancionPlaylist() {}
 
     public CancionPlaylist(String idCancion, String titulo, String artista, Integer posicion, LocalDateTime fechaAgregada) {
+        this(idCancion, titulo, artista, posicion, null, fechaAgregada);
+    }
+
+    public CancionPlaylist(String idCancion, String titulo, String artista, Integer posicion, String urlAudio, LocalDateTime fechaAgregada) {
         this.idCancion = idCancion;
         this.titulo = titulo;
         this.artista = artista;
         this.posicion = posicion;
+        this.urlAudio = urlAudio;
         this.fechaAgregada = fechaAgregada;
     }
 
@@ -44,6 +50,9 @@ public class CancionPlaylist {
 
     public Integer getPosicion() { return posicion; }
     public void setPosicion(Integer posicion) { this.posicion = posicion; }
+
+    public String getUrlAudio() { return urlAudio; }
+    public void setUrlAudio(String urlAudio) { this.urlAudio = urlAudio; }
 
     public LocalDateTime getFechaAgregada() { return fechaAgregada; }
     public void setFechaAgregada(LocalDateTime fechaAgregada) { this.fechaAgregada = fechaAgregada; }

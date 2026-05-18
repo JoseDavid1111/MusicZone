@@ -8,23 +8,20 @@ import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.time.LocalDateTime;
 
-// En MongoDB no se usa @OneToMany para playlists
-// Las playlists se consultan por separado usando el nombre de usuario como referencia
-// Esto evita documentos de usuario enormes con listas anidadas
+// Las playlists se consultan por separado usando el nombre de usuario como referencia.
+// Esto evita documentos de usuario demasiado grandes con listas anidadas.
 @Document(collection = "usuarios")
 public class Usuario {
 
     @Id
     private String id;
 
-    // @Indexed(unique = true) garantiza que no haya dos usuarios con el mismo nombre
-    // equivalente al UNIQUE constraint de PostgreSQL
+    // Garantiza que no haya dos usuarios con el mismo nombre.
     @Indexed(unique = true)
     @Field("nombre_usuario")
     private String nombreUsuario;
 
-    // @JsonProperty(WRITE_ONLY) se mantiene igual que en JPA
-    // el password nunca viaja en las respuestas JSON por seguridad
+    // El password nunca viaja en las respuestas JSON por seguridad.
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Field("password")
     private String password;

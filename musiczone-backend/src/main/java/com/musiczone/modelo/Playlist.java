@@ -8,9 +8,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-// En MongoDB no existe la tabla intermedia cancion_playlist
-// Las canciones de una playlist se guardan como array embebido dentro del documento
-// Esto elimina la necesidad de joins y hace las consultas más rápidas
+// Las canciones de una playlist se guardan como un arreglo embebido dentro del documento.
 @Document(collection = "playlists")
 public class Playlist {
 
@@ -20,9 +18,7 @@ public class Playlist {
     @Field("nombre")
     private String nombre;
 
-    // En JPA se usaba @ManyToOne con un objeto Usuario completo
-    // En MongoDB guardamos solo el nombre de usuario como referencia ligera
-    // evitando documentos anidados innecesariamente grandes
+    // Se guarda solo el nombre de usuario como referencia ligera.
     @Field("usuario")
     private String usuario;
 
@@ -35,8 +31,7 @@ public class Playlist {
     @Field("fecha_actualizacion")
     private LocalDateTime fechaActualizacion;
 
-    // Reemplaza la tabla intermedia cancion_playlist
-    // Cada elemento del array tiene: idCancion, titulo, artista, posicion, fechaAgregada
+    // Cada elemento contiene los datos básicos de una canción dentro de la playlist.
     @Field("canciones")
     private List<CancionPlaylist> canciones = new ArrayList<>();
 

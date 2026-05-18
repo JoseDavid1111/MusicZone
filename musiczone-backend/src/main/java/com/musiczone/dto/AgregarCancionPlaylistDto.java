@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 
 public class AgregarCancionPlaylistDto {
 
-    // Cambia de Long a String por el ObjectId de MongoDB
+    // Identificador de la canción que se agregará a la playlist.
     @NotNull(message = "El id de la cancion es obligatorio")
     private String idCancion;
     private Integer posicion;

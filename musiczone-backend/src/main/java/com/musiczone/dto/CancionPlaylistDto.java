@@ -1,23 +1,27 @@
 package com.musiczone.dto;
 
-// DTO que representa una canción dentro de una playlist
-// En JPA incluía album porque venía de la tabla cancion_playlist con joins
-// En MongoDB el album se omite porque CancionPlaylist solo guarda titulo y artista embebidos
+// DTO que representa una canción dentro de una playlist.
 public class CancionPlaylistDto {
 
-    // Cambia de Long a String por el ObjectId de MongoDB
+    // Identificador de la canción en MongoDB.
     private String idCancion;
     private String titulo;
     private String artista;
     private Integer posicion;
+    private String urlAudio;
 
     public CancionPlaylistDto() {}
 
     public CancionPlaylistDto(String idCancion, String titulo, String artista, Integer posicion) {
+        this(idCancion, titulo, artista, posicion, null);
+    }
+
+    public CancionPlaylistDto(String idCancion, String titulo, String artista, Integer posicion, String urlAudio) {
         this.idCancion = idCancion;
         this.titulo = titulo;
         this.artista = artista;
         this.posicion = posicion;
+        this.urlAudio = urlAudio;
     }
 
     public String getIdCancion() { return idCancion; }
@@ -31,4 +35,7 @@ public class CancionPlaylistDto {
 
     public Integer getPosicion() { return posicion; }
     public void setPosicion(Integer posicion) { this.posicion = posicion; }
+
+    public String getUrlAudio() { return urlAudio; }
+    public void setUrlAudio(String urlAudio) { this.urlAudio = urlAudio; }
 }

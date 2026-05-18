@@ -3,16 +3,14 @@ package com.musiczone.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
-// DTO para la respuesta detallada de una playlist incluyendo sus canciones
-// En JPA tenía idUsuario (Long) y nombreUsuario por separado porque venían de un JOIN
-// En MongoDB solo se guarda el nombreUsuario como referencia, no hay idUsuario separado
+// DTO para la respuesta detallada de una playlist, incluyendo sus canciones.
 public class PlaylistDetalleResponseDto {
 
-    // Cambia de Long a String por el ObjectId de MongoDB
+    // Identificador de la playlist en MongoDB.
     private String id;
     private String nombre;
     private String descripcion;
-    // Se elimina idUsuario — en MongoDB la playlist solo referencia al usuario por nombre
+    // Nombre del usuario propietario.
     private String nombreUsuario;
     private LocalDateTime fechaCreacion;
     private LocalDateTime fechaActualizacion;

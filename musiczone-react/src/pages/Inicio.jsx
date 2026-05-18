@@ -3,22 +3,24 @@ import { useAuth } from '../context/AuthContext'
 import { cancionService, playlistService } from '../services/api'
 import { Spinner, EstadoVacio } from '../components/ui'
 import TarjetaCancion from '../components/TarjetaCancion'
+import ReproductorAudio from '../components/ReproductorAudio'
 
 export default function Inicio() {
   const { usuario } = useAuth()
   const [canciones, setCanciones] = useState([])
   const [playlists, setPlaylists] = useState([])
   const [cargando, setCargando] = useState(true)
+  const [cancionActiva, setCancionActiva] = useState(null)
 
   useEffect(() => {
     Promise.all([
       cancionService.listarTodas(),
-      playlistService.listarPorUsuario(usuario.id),
+      playlistService.listarPorUsuario(usuario.nombreUsuario),
     ]).then(([c, p]) => {
       setCanciones((c.datos || []).slice(0, 8))
       setPlaylists(p.datos || [])
     }).catch(() => {}).finally(() => setCargando(false))
-  }, [usuario.id])
+  }, [usuario.nombreUsuario])
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 32, animation: 'fadeUp 0.4s ease' }}>
@@ -59,12 +61,18 @@ export default function Inicio() {
               gap: 14,
             }}>
               {canciones.map(c => (
-                <TarjetaCancion key={c.id} cancion={c} playlists={playlists} />
+                <TarjetaCancion
+                  key={c.id}
+                  cancion={c}
+                  playlists={playlists}
+                  onReproducir={setCancionActiva}
+                />
               ))}
             </div>
           )
         }
       </div>
+      <ReproductorAudio cancion={cancionActiva} onClose={() => setCancionActiva(null)} />
     </div>
   )
 }

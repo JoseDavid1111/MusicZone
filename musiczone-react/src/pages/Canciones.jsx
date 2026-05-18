@@ -1,26 +1,43 @@
 import { useEffect, useState, useCallback } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { cancionService, playlistService } from '../services/api'
 import { Spinner, EstadoVacio } from '../components/ui'
 import TarjetaCancion from '../components/TarjetaCancion'
+import ReproductorAudio from '../components/ReproductorAudio'
 
 export default function Canciones() {
   const { usuario } = useAuth()
+  const [searchParams] = useSearchParams()
   const [canciones, setCanciones] = useState([])
   const [playlists, setPlaylists] = useState([])
   const [cargando, setCargando] = useState(true)
   const [busqueda, setBusqueda] = useState('')
   const [busquedaArtista, setBusquedaArtista] = useState('')
+  const [cancionActiva, setCancionActiva] = useState(null)
+  const busquedaGlobal = searchParams.get('buscar') || ''
 
   useEffect(() => {
+    setCargando(true)
     Promise.all([
       cancionService.listarTodas(),
-      playlistService.listarPorUsuario(usuario.id),
+      playlistService.listarPorUsuario(usuario.nombreUsuario),
     ]).then(([c, p]) => {
-      setCanciones(c.datos || [])
+      const cancionesApi = c.datos || []
+      const texto = busquedaGlobal.trim().toLowerCase()
+      const filtradas = texto
+        ? cancionesApi.filter(cancion =>
+            cancion.titulo?.toLowerCase().includes(texto) ||
+            cancion.artista?.toLowerCase().includes(texto)
+          )
+        : cancionesApi
+
+      setCanciones(filtradas)
+      setBusqueda(busquedaGlobal)
+      setBusquedaArtista('')
       setPlaylists(p.datos || [])
     }).catch(() => {}).finally(() => setCargando(false))
-  }, [usuario.id])
+  }, [usuario.nombreUsuario, busquedaGlobal])
 
   const buscarPorTitulo = useCallback(async (titulo) => {
     setBusqueda(titulo)
@@ -90,11 +107,17 @@ export default function Canciones() {
             gap: 14,
           }}>
             {canciones.map(c => (
-              <TarjetaCancion key={c.id} cancion={c} playlists={playlists} />
+              <TarjetaCancion
+                key={c.id}
+                cancion={c}
+                playlists={playlists}
+                onReproducir={setCancionActiva}
+              />
             ))}
           </div>
         )
       }
+      <ReproductorAudio cancion={cancionActiva} onClose={() => setCancionActiva(null)} />
     </div>
   )
 }

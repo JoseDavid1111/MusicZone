@@ -20,18 +20,18 @@ export default function Playlists() {
 
   const cargar = () => {
     setCargando(true)
-    playlistService.listarPorUsuario(usuario.id)
+    playlistService.listarPorUsuario(usuario.nombreUsuario)
       .then(d => setPlaylists(d.datos || []))
       .catch(() => {})
       .finally(() => setCargando(false))
   }
 
-  useEffect(() => { cargar() }, [usuario.id])
+  useEffect(() => { cargar() }, [usuario.nombreUsuario])
 
   const crear = async () => {
     if (!nombre.trim()) return
     try {
-      await playlistService.crear(nombre, descripcion, usuario.id)
+      await playlistService.crear(nombre, descripcion, usuario.nombreUsuario)
       exito('Playlist creada ✓')
       setModalCrear(false); setNombre(''); setDescripcion('')
       cargar()
@@ -41,7 +41,7 @@ export default function Playlists() {
   const guardarEdicion = async () => {
     if (!nombre.trim()) return
     try {
-      await playlistService.actualizar(modalEditar.id, nombre, descripcion, usuario.id)
+      await playlistService.actualizar(modalEditar.id, nombre, descripcion, usuario.nombreUsuario)
       exito('Playlist actualizada ✓')
       setModalEditar(null); setNombre(''); setDescripcion('')
       cargar()

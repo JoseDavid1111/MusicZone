@@ -71,21 +71,21 @@ export const artistaService = {
 
 // ── PLAYLISTS ────────────────────────────
 export const playlistService = {
-  listarPorUsuario: (idUsuario) =>
-    request(`/playlists/usuario/${idUsuario}`),
+  listarPorUsuario: (nombreUsuario) =>
+    request(`/playlists/usuario/${encodeURIComponent(nombreUsuario)}`),
 
   verDetalle: (id) => request(`/playlists/${id}`),
 
-  crear: (nombre, descripcion, idUsuario) =>
+  crear: (nombre, descripcion, nombreUsuario) =>
     request('/playlists', {
       method: 'POST',
-      body: JSON.stringify({ nombre, descripcion, idUsuario }),
+      body: JSON.stringify({ nombre, descripcion, nombreUsuario }),
     }),
 
-  actualizar: (id, nombre, descripcion, idUsuario) =>
+  actualizar: (id, nombre, descripcion, nombreUsuario) =>
     request(`/playlists/${id}`, {
       method: 'PUT',
-      body: JSON.stringify({ nombre, descripcion, idUsuario }),
+      body: JSON.stringify({ nombre, descripcion, nombreUsuario }),
     }),
 
   eliminar: (id) =>

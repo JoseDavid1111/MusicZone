@@ -5,12 +5,10 @@ import com.musiczone.modelo.Usuario;
 
 import java.util.Optional;
 
-// Se reemplaza JpaRepository por MongoRepository
-// El segundo parámetro cambia de Long a String por el ObjectId de MongoDB
+// Repositorio de usuarios en MongoDB.
 public interface UsuarioRepositorio extends MongoRepository<Usuario, String> {
 
-    // Optional se mantiene igual — si el usuario no existe retorna vacío en vez de null
-    // Spring Data MongoDB soporta estos métodos derivados igual que JPA
+    // Métodos derivados por nombre para consultas frecuentes.
     Optional<Usuario> findByNombreUsuario(String nombreUsuario);
     Optional<Usuario> findByCorreo(String correo);
 

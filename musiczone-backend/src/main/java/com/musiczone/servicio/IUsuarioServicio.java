@@ -6,14 +6,13 @@ import com.musiczone.dto.LoginResponseDto;
 import com.musiczone.dto.UsuarioRequestDto;
 import com.musiczone.dto.UsuarioResponseDto;
 
-// Se mantiene la misma estructura de interface + implementación
-// Solo cambia el tipo del id de Long a String por el ObjectId de MongoDB
+// Contrato de operaciones relacionadas con usuarios.
 public interface IUsuarioServicio {
-    // login genera un JWT en vez de solo validar credenciales
+    // Login con generación de JWT para las rutas protegidas.
     LoginResponseDto login(LoginRequestDto loginRequestDto);
     UsuarioResponseDto registrar(UsuarioRequestDto usuarioRequestDto);
     List<UsuarioResponseDto> listarTodos();
 
-    // El tipo del id cambia de Long a String por el ObjectId de MongoDB
+    // Busca un usuario por su identificador.
     UsuarioResponseDto buscarUsuario(String id);
 }

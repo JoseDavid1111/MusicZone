@@ -4,7 +4,7 @@ package com.musiczone.dto;
 // Evita exponer directamente el modelo y permite controlar qué campos se envían
 public class CancionResponseDto {
 
-    // Cambia de Long a String por el ObjectId de MongoDB
+    // Identificador de la canción en MongoDB.
     private String id;
     private String titulo;
     private String artista;
@@ -13,7 +13,7 @@ public class CancionResponseDto {
     private Integer numeroTrack;
     private String genero;
     private Integer yearLanzamiento;
-    // Campo nuevo — URL del archivo MP3 en Supabase Storage para reproducción
+    // URL del archivo de audio usado por el reproductor del frontend.
     private String urlAudio;
 
     public CancionResponseDto() {}
