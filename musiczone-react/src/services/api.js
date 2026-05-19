@@ -65,6 +65,7 @@ export const cancionService = {
 // ── ARTISTAS ─────────────────────────────
 export const artistaService = {
   listarTodos: () => request('/artistas'),
+  verDetalle: (id) => request(`/artistas/${encodeURIComponent(id)}`),
   buscarPorNombre: (nombre) =>
     request(`/artistas/buscar?nombre=${encodeURIComponent(nombre)}`),
 }
