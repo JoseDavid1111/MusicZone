@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react'
+import { useOutletContext } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { cancionService, playlistService } from '../services/api'
 import { Spinner, EstadoVacio } from '../components/ui'
 import TarjetaCancion from '../components/TarjetaCancion'
-import ReproductorAudio from '../components/ReproductorAudio'
 
 export default function Inicio() {
   const { usuario } = useAuth()
+  const { reproducirCancion } = useOutletContext()
   const [canciones, setCanciones] = useState([])
   const [playlists, setPlaylists] = useState([])
   const [cargando, setCargando] = useState(true)
-  const [cancionActiva, setCancionActiva] = useState(null)
 
   useEffect(() => {
     Promise.all([
@@ -24,7 +24,6 @@ export default function Inicio() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 32, animation: 'fadeUp 0.4s ease' }}>
-      {/* Bienvenida */}
       <div style={{
         background: 'linear-gradient(135deg, var(--acento-dim), transparent)',
         border: '1px solid var(--acento-dim)',
@@ -43,7 +42,6 @@ export default function Inicio() {
         </p>
       </div>
 
-      {/* Canciones destacadas */}
       <div>
         <h3 style={{
           fontFamily: 'var(--font-display)',
@@ -53,7 +51,7 @@ export default function Inicio() {
         </h3>
 
         {cargando ? <Spinner /> : canciones.length === 0
-          ? <EstadoVacio icono="🎵" texto="No hay canciones disponibles" />
+          ? <EstadoVacio icono="♪" texto="No hay canciones disponibles" />
           : (
             <div style={{
               display: 'grid',
@@ -65,14 +63,13 @@ export default function Inicio() {
                   key={c.id}
                   cancion={c}
                   playlists={playlists}
-                  onReproducir={setCancionActiva}
+                  onReproducir={reproducirCancion}
                 />
               ))}
             </div>
           )
         }
       </div>
-      <ReproductorAudio cancion={cancionActiva} onClose={() => setCancionActiva(null)} />
     </div>
   )
 }

@@ -9,13 +9,11 @@ export default function Login() {
   const { login } = useAuth()
   const navigate = useNavigate()
 
-  // Login state
   const [lUsuario, setLUsuario] = useState('')
   const [lPassword, setLPassword] = useState('')
   const [lError, setLError] = useState('')
   const [lCargando, setLCargando] = useState(false)
 
-  // Registro state
   const [rUsuario, setRUsuario] = useState('')
   const [rCorreo, setRCorreo] = useState('')
   const [rPassword, setRPassword] = useState('')
@@ -43,14 +41,17 @@ export default function Login() {
   }
 
   const handleRegistro = async () => {
-    setRError(''); setRExito('')
+    setRError('')
+    setRExito('')
     if (!rUsuario || !rCorreo || !rPassword) { setRError('Completa todos los campos'); return }
     setRCargando(true)
     try {
       const data = await authService.registrar(rUsuario, rCorreo, rPassword)
       if (data.exito !== false) {
         setRExito('¡Cuenta creada! Ahora puedes iniciar sesión.')
-        setRUsuario(''); setRCorreo(''); setRPassword('')
+        setRUsuario('')
+        setRCorreo('')
+        setRPassword('')
         setTimeout(() => setTab('login'), 2000)
       } else {
         setRError(data.mensaje || 'No se pudo crear la cuenta')
@@ -69,7 +70,6 @@ export default function Login() {
       background: 'radial-gradient(ellipse 80% 60% at 50% 0%, #12122a, var(--bg-base))',
       padding: 20,
     }}>
-      {/* Glow decorativo */}
       <div style={{
         position: 'fixed', top: -150, left: '50%',
         transform: 'translateX(-50%)',
@@ -89,7 +89,6 @@ export default function Login() {
         animation: 'fadeUp 0.5s ease',
         position: 'relative', zIndex: 1,
       }}>
-        {/* Logo */}
         <div style={{ textAlign: 'center' }}>
           <div style={{
             fontSize: 44, marginBottom: 8,
@@ -104,7 +103,6 @@ export default function Login() {
           </h1>
         </div>
 
-        {/* Tabs */}
         <div style={{
           display: 'flex', gap: 4,
           background: 'var(--bg-base)',
@@ -130,7 +128,6 @@ export default function Login() {
           ))}
         </div>
 
-        {/* Login */}
         {tab === 'login' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <Campo label="Usuario" value={lUsuario} onChange={setLUsuario} placeholder="Tu nombre de usuario" />
@@ -142,7 +139,6 @@ export default function Login() {
           </div>
         )}
 
-        {/* Registro */}
         {tab === 'registro' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <Campo label="Usuario" value={rUsuario} onChange={setRUsuario} placeholder="Elige un nombre de usuario" />

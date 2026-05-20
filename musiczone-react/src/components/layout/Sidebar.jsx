@@ -64,7 +64,7 @@ export default function Sidebar() {
           onMouseEnter={e => { if (!esActivo(item.path)) { e.currentTarget.style.background = 'var(--bg-card)'; e.currentTarget.style.color = 'var(--texto-1)' } }}
           onMouseLeave={e => { if (!esActivo(item.path)) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--texto-2)' } }}
         >
-          <span>{item.icono}</span> {item.label}
+          <span style={{ minWidth: 24, fontSize: 16 }}>{item.icono}</span> {item.label}
         </button>
       ))}
 

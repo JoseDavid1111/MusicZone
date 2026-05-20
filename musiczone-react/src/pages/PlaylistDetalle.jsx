@@ -1,23 +1,23 @@
 import { useEffect, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useOutletContext } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import { playlistService, cancionService } from '../services/api'
 import { Spinner, EstadoVacio, Modal, BtnSecundario } from '../components/ui'
-import ReproductorAudio from '../components/ReproductorAudio'
 
 export default function PlaylistDetalle() {
   const { id } = useParams()
   const { usuario } = useAuth()
   const { exito, error } = useToast()
   const navigate = useNavigate()
+  const { cancionActiva, reproducirCancion, reproducirLista } = useOutletContext()
 
   const [playlist, setPlaylist] = useState(null)
   const [cargando, setCargando] = useState(true)
   const [modalVisible, setModalVisible] = useState(false)
+  const [cancionPorQuitar, setCancionPorQuitar] = useState(null)
   const [todasCanciones, setTodasCanciones] = useState([])
   const [busqueda, setBusqueda] = useState('')
-  const [cancionActiva, setCancionActiva] = useState(null)
 
   const cargar = () => {
     setCargando(true)
@@ -43,23 +43,30 @@ export default function PlaylistDetalle() {
     } catch (e) { error(e.message) }
   }
 
-  const quitar = async (idCancion) => {
+  const quitar = async () => {
+    if (!cancionPorQuitar) return
     try {
-      await playlistService.quitarCancion(id, idCancion)
+      await playlistService.quitarCancion(id, cancionPorQuitar.idCancion)
       exito('Canción quitada')
+      setCancionPorQuitar(null)
       cargar()
     } catch (e) { error(e.message) }
   }
 
+  const reproducibles = (playlist?.canciones || []).filter(c => c.urlAudio)
+
   const reproducirAleatoria = () => {
-    const reproducibles = (playlist.canciones || []).filter(c => c.urlAudio)
     if (reproducibles.length === 0) return
 
     const opciones = reproducibles.length > 1 && cancionActiva
       ? reproducibles.filter(c => c.idCancion !== cancionActiva.idCancion)
       : reproducibles
 
-    setCancionActiva(opciones[Math.floor(Math.random() * opciones.length)])
+    reproducirCancion(opciones[Math.floor(Math.random() * opciones.length)])
+  }
+
+  const reproducirPlaylist = () => {
+    reproducirLista(playlist.canciones || [])
   }
 
   const cancionesFiltradas = todasCanciones.filter(c =>
@@ -72,7 +79,6 @@ export default function PlaylistDetalle() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24, animation: 'fadeUp 0.4s ease' }}>
-      {/* Botón volver */}
       <button
         onClick={() => navigate('/playlists')}
         style={{
@@ -88,7 +94,6 @@ export default function PlaylistDetalle() {
         ← Volver
       </button>
 
-      {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
         <div>
           <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 36, letterSpacing: 1 }}>
@@ -100,18 +105,16 @@ export default function PlaylistDetalle() {
         </div>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           <button
+            onClick={reproducirPlaylist}
+            disabled={reproducibles.length === 0}
+            style={botonAccionStyle(reproducibles.length > 0, true)}
+          >
+            Reproducir playlist
+          </button>
+          <button
             onClick={reproducirAleatoria}
-            disabled={!(playlist.canciones || []).some(c => c.urlAudio)}
-            style={{
-              background: (playlist.canciones || []).some(c => c.urlAudio) ? 'var(--acento-dim)' : 'var(--bg-glass)',
-              color: (playlist.canciones || []).some(c => c.urlAudio) ? 'var(--acento)' : 'var(--texto-3)',
-              border: (playlist.canciones || []).some(c => c.urlAudio) ? '1px solid var(--acento)' : '1px solid var(--borde)',
-              borderRadius: 'var(--radio)',
-              padding: '10px 18px',
-              fontWeight: 700,
-              fontSize: 13,
-              cursor: (playlist.canciones || []).some(c => c.urlAudio) ? 'pointer' : 'not-allowed',
-            }}
+            disabled={reproducibles.length === 0}
+            style={botonAccionStyle(reproducibles.length > 0)}
           >
             Aleatoria
           </button>
@@ -129,7 +132,6 @@ export default function PlaylistDetalle() {
         </div>
       </div>
 
-      {/* Lista de canciones */}
       {(!playlist.canciones || playlist.canciones.length === 0)
         ? <EstadoVacio icono="🎵" texto="Esta playlist está vacía. ¡Agrega canciones!" />
         : (
@@ -157,7 +159,7 @@ export default function PlaylistDetalle() {
                   <div style={{ fontSize: 12, color: 'var(--texto-2)', marginTop: 2 }}>{c.artista}</div>
                 </div>
                 <button
-                  onClick={() => setCancionActiva(c)}
+                  onClick={() => reproducirCancion(c)}
                   disabled={!c.urlAudio}
                   style={{
                     flex: '0 0 auto',
@@ -174,7 +176,7 @@ export default function PlaylistDetalle() {
                   Reproducir
                 </button>
                 <button
-                  onClick={() => quitar(c.idCancion)}
+                  onClick={() => setCancionPorQuitar(c)}
                   title="Quitar de playlist"
                   style={{
                     background: 'transparent', border: 'none',
@@ -185,7 +187,7 @@ export default function PlaylistDetalle() {
                   onMouseEnter={e => { e.currentTarget.style.color = 'var(--rojo)'; e.currentTarget.style.background = 'var(--rojo-dim)' }}
                   onMouseLeave={e => { e.currentTarget.style.color = 'var(--texto-3)'; e.currentTarget.style.background = 'transparent' }}
                 >
-                  ✕
+                  ×
                 </button>
               </div>
             ))}
@@ -193,7 +195,6 @@ export default function PlaylistDetalle() {
         )
       }
 
-      {/* Modal agregar canción */}
       <Modal visible={modalVisible} onClose={() => setModalVisible(false)} titulo="Agregar canción">
         <input
           value={busqueda}
@@ -211,6 +212,7 @@ export default function PlaylistDetalle() {
             : cancionesFiltradas.map(c => (
               <div key={c.id} style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                gap: 12,
                 padding: '10px 14px',
                 background: 'var(--bg-base)', borderRadius: 8,
                 border: '1px solid var(--borde)',
@@ -238,7 +240,52 @@ export default function PlaylistDetalle() {
           Cerrar
         </BtnSecundario>
       </Modal>
-      <ReproductorAudio cancion={cancionActiva} onClose={() => setCancionActiva(null)} />
+
+      <Modal
+        visible={!!cancionPorQuitar}
+        onClose={() => setCancionPorQuitar(null)}
+        titulo="Quitar canción"
+      >
+        <p style={{ color: 'var(--texto-2)', lineHeight: 1.5 }}>
+          ¿Seguro que quieres quitar "{cancionPorQuitar?.titulo}" de esta playlist?
+        </p>
+        <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
+          <BtnSecundario onClick={() => setCancionPorQuitar(null)}>Cancelar</BtnSecundario>
+          <button
+            onClick={quitar}
+            style={{
+              background: 'var(--rojo)',
+              color: '#fff',
+              border: 'none',
+              borderRadius: 'var(--radio)',
+              padding: '11px 18px',
+              fontSize: 13,
+              fontWeight: 700,
+            }}
+          >
+            Quitar
+          </button>
+        </div>
+      </Modal>
     </div>
   )
+}
+
+function botonAccionStyle(habilitado, principal = false) {
+  return {
+    background: habilitado
+      ? principal ? 'var(--acento)' : 'var(--acento-dim)'
+      : 'var(--bg-glass)',
+    color: habilitado
+      ? principal ? '#000' : 'var(--acento)'
+      : 'var(--texto-3)',
+    border: habilitado
+      ? '1px solid var(--acento)'
+      : '1px solid var(--borde)',
+    borderRadius: 'var(--radio)',
+    padding: '10px 18px',
+    fontWeight: 700,
+    fontSize: 13,
+    cursor: habilitado ? 'pointer' : 'not-allowed',
+  }
 }

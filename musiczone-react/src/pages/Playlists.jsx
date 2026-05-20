@@ -13,7 +13,8 @@ export default function Playlists() {
   const [playlists, setPlaylists] = useState([])
   const [cargando, setCargando] = useState(true)
   const [modalCrear, setModalCrear] = useState(false)
-  const [modalEditar, setModalEditar] = useState(null) // { id, nombre, descripcion }
+  const [modalEditar, setModalEditar] = useState(null)
+  const [playlistPorEliminar, setPlaylistPorEliminar] = useState(null)
 
   const [nombre, setNombre] = useState('')
   const [descripcion, setDescripcion] = useState('')
@@ -33,7 +34,9 @@ export default function Playlists() {
     try {
       await playlistService.crear(nombre, descripcion, usuario.nombreUsuario)
       exito('Playlist creada ✓')
-      setModalCrear(false); setNombre(''); setDescripcion('')
+      setModalCrear(false)
+      setNombre('')
+      setDescripcion('')
       cargar()
     } catch (e) { error(e.message) }
   }
@@ -43,16 +46,19 @@ export default function Playlists() {
     try {
       await playlistService.actualizar(modalEditar.id, nombre, descripcion, usuario.nombreUsuario)
       exito('Playlist actualizada ✓')
-      setModalEditar(null); setNombre(''); setDescripcion('')
+      setModalEditar(null)
+      setNombre('')
+      setDescripcion('')
       cargar()
     } catch (e) { error(e.message) }
   }
 
-  const eliminar = async (id) => {
-    if (!confirm('¿Eliminar esta playlist?')) return
+  const eliminar = async () => {
+    if (!playlistPorEliminar) return
     try {
-      await playlistService.eliminar(id)
+      await playlistService.eliminar(playlistPorEliminar.id)
       exito('Playlist eliminada')
+      setPlaylistPorEliminar(null)
       cargar()
     } catch (e) { error(e.message) }
   }
@@ -65,7 +71,7 @@ export default function Playlists() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24, animation: 'fadeUp 0.4s ease' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
         <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 32, letterSpacing: 1 }}>
           Mis Playlists
         </h2>
@@ -115,15 +121,15 @@ export default function Playlists() {
                     border: '1px solid var(--borde-fuerte)',
                     borderRadius: 8, cursor: 'pointer', fontSize: 12, fontWeight: 600,
                   }}>
-                    ✏️ Editar
+                    Editar
                   </button>
-                  <button onClick={() => eliminar(p.id)} style={{
+                  <button onClick={() => setPlaylistPorEliminar(p)} style={{
                     flex: 1, padding: '8px',
                     background: 'var(--rojo-dim)', color: 'var(--rojo)',
                     border: '1px solid var(--rojo)',
                     borderRadius: 8, cursor: 'pointer', fontSize: 12, fontWeight: 600,
                   }}>
-                    🗑️ Eliminar
+                    Eliminar
                   </button>
                 </div>
               </div>
@@ -132,7 +138,6 @@ export default function Playlists() {
         )
       }
 
-      {/* Modal crear */}
       <Modal visible={modalCrear} onClose={() => setModalCrear(false)} titulo="Nueva Playlist">
         <Campo label="Nombre" value={nombre} onChange={setNombre} placeholder="Mi playlist favorita" />
         <Campo label="Descripción (opcional)" value={descripcion} onChange={setDescripcion} placeholder="Una descripción..." />
@@ -142,13 +147,39 @@ export default function Playlists() {
         </div>
       </Modal>
 
-      {/* Modal editar */}
       <Modal visible={!!modalEditar} onClose={() => setModalEditar(null)} titulo="Editar Playlist">
         <Campo label="Nombre" value={nombre} onChange={setNombre} placeholder="Nombre de la playlist" />
         <Campo label="Descripción" value={descripcion} onChange={setDescripcion} placeholder="Descripción..." />
         <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
           <BtnSecundario onClick={() => setModalEditar(null)}>Cancelar</BtnSecundario>
           <BtnPrimario onClick={guardarEdicion} style={{ width: 'auto', padding: '12px 24px' }}>Guardar</BtnPrimario>
+        </div>
+      </Modal>
+
+      <Modal
+        visible={!!playlistPorEliminar}
+        onClose={() => setPlaylistPorEliminar(null)}
+        titulo="Eliminar playlist"
+      >
+        <p style={{ color: 'var(--texto-2)', lineHeight: 1.5 }}>
+          ¿Seguro que quieres eliminar "{playlistPorEliminar?.nombre}"? Esta acción no se puede deshacer.
+        </p>
+        <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
+          <BtnSecundario onClick={() => setPlaylistPorEliminar(null)}>Cancelar</BtnSecundario>
+          <button
+            onClick={eliminar}
+            style={{
+              background: 'var(--rojo)',
+              color: '#fff',
+              border: 'none',
+              borderRadius: 'var(--radio)',
+              padding: '11px 18px',
+              fontSize: 13,
+              fontWeight: 700,
+            }}
+          >
+            Eliminar
+          </button>
         </div>
       </Modal>
     </div>

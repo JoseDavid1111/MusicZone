@@ -34,7 +34,6 @@ export default function Header({ onBuscar }) {
       padding: '0 24px', gap: 16,
       zIndex: 100,
     }}>
-      {/* Logo */}
       <div style={{ minWidth: 'var(--sidebar-w)', cursor: 'pointer' }} onClick={() => navigate('/app')}>
         <span style={{
           fontFamily: 'var(--font-display)',
@@ -46,7 +45,6 @@ export default function Header({ onBuscar }) {
         </span>
       </div>
 
-      {/* Buscador */}
       <form onSubmit={enviarBusqueda} style={{
         flex: 1, maxWidth: 480,
         display: 'flex', alignItems: 'center',
@@ -54,7 +52,7 @@ export default function Header({ onBuscar }) {
         border: '1px solid var(--borde-fuerte)',
         borderRadius: 100, padding: '0 16px', gap: 10,
       }}>
-        <span style={{ color: 'var(--texto-2)', fontSize: 15 }}>🔍</span>
+        <span style={{ color: 'var(--texto-2)', fontSize: 12, fontWeight: 700 }}>Buscar</span>
         <input
           value={query}
           onChange={handleBuscar}
@@ -68,7 +66,6 @@ export default function Header({ onBuscar }) {
         />
       </form>
 
-      {/* Usuario */}
       <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 12 }}>
         {usuario && (
           <span style={{

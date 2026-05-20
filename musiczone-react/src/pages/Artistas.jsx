@@ -119,7 +119,7 @@ export default function Artistas() {
                   <span style={chipStyle}>{artistaSeleccionado.genero}</span>
                 )}
                 {artistaSeleccionado.pais && (
-                  <span style={chipStyle}>Pais: {artistaSeleccionado.pais}</span>
+                  <span style={chipStyle}>País: {artistaSeleccionado.pais}</span>
                 )}
               </div>
             </div>
@@ -164,16 +164,16 @@ export default function Artistas() {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: 16 }}>
             <div style={detalleBloqueStyle}>
-              <h4 style={detalleTituloStyle}>Biografia</h4>
+              <h4 style={detalleTituloStyle}>Biografía</h4>
               <p style={{ color: 'var(--texto-2)', lineHeight: 1.6 }}>
-                {artistaSeleccionado.bio || 'No hay biografia disponible para este artista.'}
+                {artistaSeleccionado.bio || 'No hay biografía disponible para este artista.'}
               </p>
             </div>
 
             <div style={detalleBloqueStyle}>
-              <h4 style={detalleTituloStyle}>Albumes</h4>
+              <h4 style={detalleTituloStyle}>Álbumes</h4>
               {cargandoDetalle ? (
-                <p style={textoSecundarioStyle}>Cargando albumes...</p>
+                <p style={textoSecundarioStyle}>Cargando álbumes...</p>
               ) : albumes.length > 0 ? (
                 <ul style={listaStyle}>
                   {albumes.map(album => (
@@ -181,7 +181,7 @@ export default function Artistas() {
                   ))}
                 </ul>
               ) : (
-                <p style={textoSecundarioStyle}>No hay albumes registrados.</p>
+                <p style={textoSecundarioStyle}>No hay álbumes registrados.</p>
               )}
             </div>
 

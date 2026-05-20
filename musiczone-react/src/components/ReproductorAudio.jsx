@@ -1,4 +1,4 @@
-export default function ReproductorAudio({ cancion, onClose }) {
+export default function ReproductorAudio({ cancion, onClose, onEnded, indice = 0, total = 0 }) {
   if (!cancion) return null
 
   return (
@@ -49,6 +49,7 @@ export default function ReproductorAudio({ cancion, onClose }) {
         </div>
         <div style={{ color: 'var(--texto-2)', fontSize: 12, marginTop: 3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
           {cancion.artista || 'Artista desconocido'}
+          {total > 1 ? ` · ${indice + 1} de ${total}` : ''}
         </div>
       </div>
 
@@ -58,6 +59,7 @@ export default function ReproductorAudio({ cancion, onClose }) {
           controls
           autoPlay
           src={cancion.urlAudio}
+          onEnded={onEnded}
           style={{
             flex: '1 1 420px',
             minWidth: 240,
@@ -65,7 +67,7 @@ export default function ReproductorAudio({ cancion, onClose }) {
             accentColor: 'var(--acento)',
           }}
         >
-          Tu navegador no soporta reproduccion de audio.
+          Tu navegador no soporta reproducción de audio.
         </audio>
       ) : (
         <div style={{ flex: 1, color: 'var(--texto-3)', fontSize: 13 }}>

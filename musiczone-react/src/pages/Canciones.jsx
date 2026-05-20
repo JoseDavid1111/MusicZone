@@ -1,20 +1,19 @@
 import { useEffect, useState, useCallback } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useOutletContext, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { cancionService, playlistService } from '../services/api'
 import { Spinner, EstadoVacio } from '../components/ui'
 import TarjetaCancion from '../components/TarjetaCancion'
-import ReproductorAudio from '../components/ReproductorAudio'
 
 export default function Canciones() {
   const { usuario } = useAuth()
+  const { reproducirCancion } = useOutletContext()
   const [searchParams] = useSearchParams()
   const [canciones, setCanciones] = useState([])
   const [playlists, setPlaylists] = useState([])
   const [cargando, setCargando] = useState(true)
   const [busqueda, setBusqueda] = useState('')
   const [busquedaArtista, setBusquedaArtista] = useState('')
-  const [cancionActiva, setCancionActiva] = useState(null)
   const busquedaGlobal = searchParams.get('buscar') || ''
 
   useEffect(() => {
@@ -73,7 +72,6 @@ export default function Canciones() {
         Todas las canciones
       </h2>
 
-      {/* Filtros */}
       <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
         {[
           { value: busqueda, onChange: buscarPorTitulo, placeholder: 'Buscar por título...' },
@@ -97,9 +95,8 @@ export default function Canciones() {
         ))}
       </div>
 
-      {/* Grid */}
       {cargando ? <Spinner /> : canciones.length === 0
-        ? <EstadoVacio icono="🔍" texto="No se encontraron canciones" />
+        ? <EstadoVacio icono="Buscar" texto="No se encontraron canciones" />
         : (
           <div style={{
             display: 'grid',
@@ -111,13 +108,12 @@ export default function Canciones() {
                 key={c.id}
                 cancion={c}
                 playlists={playlists}
-                onReproducir={setCancionActiva}
+                onReproducir={reproducirCancion}
               />
             ))}
           </div>
         )
       }
-      <ReproductorAudio cancion={cancionActiva} onClose={() => setCancionActiva(null)} />
     </div>
   )
 }
